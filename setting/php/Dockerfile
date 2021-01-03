@@ -17,7 +17,7 @@ RUN cd /etc/apt \
     # && pecl install mcrypt \
     # && docker-php-ext-enable mcrypt \
     && pecl install redis && docker-php-ext-enable redis \
-    && pecl install swoole \
+    && pecl install swoole && docker-php-ext-enable swoole \
     && apt-get install -y systemctl \
     && apt-get install -y supervisor \
     && apt-get install -y apt-utils \

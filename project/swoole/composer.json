@@ -1,6 +1,8 @@
 {
     "require": {
         "swlib/saber": "^1.0",
-        "symfony/var-dumper": "^5.2"
+        "symfony/var-dumper": "^5.2",
+        "symfony/finder": "^5.2",
+        "swoolex/swoolex": "^1.2"
     }
 }

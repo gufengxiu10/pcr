@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "508ef96ed1ec51819452b5764b0286ca",
+    "content-hash": "9a81ea32e46d4ddf6c3dab17a21393d2",
     "packages": [
         {
             "name": "psr/http-message",
@@ -248,6 +248,104 @@
                 "source": "https://github.com/swlib/util/tree/v1.0.3"
             },
             "time": "2020-08-24T10:00:58+00:00"
+        },
+        {
+            "name": "swoolex/swoolex",
+            "version": "v1.2.21",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/swoolex/swoolex.git",
+                "reference": "59a06da11e08b619cb29b9557a7d928cf1f40efe"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/swoolex/swoolex/zipball/59a06da11e08b619cb29b9557a7d928cf1f40efe",
+                "reference": "59a06da11e08b619cb29b9557a7d928cf1f40efe",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1.0"
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "小黄牛",
+                    "email": "1731223728@qq.com"
+                }
+            ],
+            "description": "the new swoolex",
+            "homepage": "https://www.sw-x.cn/",
+            "keywords": [
+                "sw-x",
+                "swoolex"
+            ],
+            "support": {
+                "issues": "https://github.com/swoolex/swoolex/issues",
+                "source": "https://github.com/swoolex/swoolex/tree/v1.2.21"
+            },
+            "time": "2020-12-30T11:00:10+00:00"
+        },
+        {
+            "name": "symfony/finder",
+            "version": "v5.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/finder.git",
+                "reference": "0b9231a5922fd7287ba5b411893c0ecd2733e5ba"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/finder/zipball/0b9231a5922fd7287ba5b411893c0ecd2733e5ba",
+                "reference": "0b9231a5922fd7287ba5b411893c0ecd2733e5ba",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Finder\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony Finder Component",
+            "homepage": "https://symfony.com",
+            "support": {
+                "source": "https://github.com/symfony/finder/tree/v5.2.1"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2020-12-08T17:02:38+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",

@@ -18,33 +18,36 @@ $ws->on('message', function ($ws, $frame) {
 
     if (isset($data['message'])) {
         if ($data['message_type'] == 'group') {
-            if ($data['message'] == '逗平') {
-                $postData = [
-                    "action"        => "send_group_msg",
-                    "params" => [
-                        "group_id"      => $data['group_id'],
-                        "message"       => '是弟弟',
-                    ],
-                ];
-                $ws->push($frame->fd, json_encode($postData, JSON_UNESCAPED_UNICODE));
-            } else if ($data['message'] == '小队长') {
-                $postData = [
-                    "action"        => "send_group_msg",
-                    "params" => [
-                        "group_id"      => $data['group_id'],
-                        "message"       => '是妹妹',
-                    ],
-                ];
-                $ws->push($frame->fd, json_encode($postData, JSON_UNESCAPED_UNICODE));
-            } else if (in_array($data['message'], ['小彬彬', '锤子彬'])) {
-                $postData = [
-                    "action"        => "send_group_msg",
-                    "params" => [
-                        "group_id"      => $data['group_id'],
-                        "message"       => '是皮皮虾',
-                    ],
-                ];
-                $ws->push($frame->fd, json_encode($postData, JSON_UNESCAPED_UNICODE));
+            if ($data['message'] == '来张图片') {
+                $images = scandir('/images/pcr');
+                if (!empty($images) && !empty($images[rand(1, count($images))])) {
+                    $img = $images[rand(1, count($images) - 2)];
+                    dump($images);
+                    dump(count($images));
+                    dump(count($images) - 2);
+                    $postData = [
+                        "action"        => "send_group_msg",
+                        "params" => [
+                            "group_id"      => $data['group_id'],
+                            "message" => [
+                                "type" => "image",
+                                "data" => [
+                                    "file" => "http://172.200.1.4:9000/pcr/" . $img,
+                                ]
+                            ]
+                        ],
+                    ];
+                    $ws->push($frame->fd, json_encode($postData, JSON_UNESCAPED_UNICODE));
+                } else {
+                    $postData = [
+                        "action"        => "send_group_msg",
+                        "params" => [
+                            "group_id"      => $data['group_id'],
+                            "message" => '暂无图片'
+                        ],
+                    ];
+                    $ws->push($frame->fd, json_encode($postData, JSON_UNESCAPED_UNICODE));
+                }
             }
         } else if ($data['message'] == '1') {
             $postData = [

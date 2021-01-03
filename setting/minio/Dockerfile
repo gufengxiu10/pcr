@@ -1,0 +1,4 @@
+FROM minio/minio
+
+ENV MINIO_ACCESS_KEY=admin     
+ENV MINIO_SECRET_KEY=123456

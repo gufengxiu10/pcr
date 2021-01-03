@@ -1,2 +1,6 @@
 setting/goCqhttp/file
 vendor
+cqhttp
+app
+minio/data
+minio/config
