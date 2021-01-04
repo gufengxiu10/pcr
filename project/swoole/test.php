@@ -5,7 +5,7 @@ require_once "vendor/autoload.php";
 use Swlib\SaberGM;
 
 go(function () {
-    $websocket = SaberGM::websocket('ws://172.200.1.3:9503');
+    $websocket = SaberGM::websocket('ws://172.200.1.2:9502');
     while (true) {
         $data = [
             "action" => "get_login_info"

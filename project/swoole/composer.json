@@ -1,4 +1,10 @@
 {
+    "autoload": {
+        "psr-4": {
+            "Anng\\": "core/",
+            "App\\": "app/"
+        }
+    },
     "require": {
         "swlib/saber": "^1.0",
         "symfony/var-dumper": "^5.2",

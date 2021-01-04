@@ -16,6 +16,8 @@ RUN cd /etc/apt \
     && apt-get update \
     # && pecl install mcrypt \
     # && docker-php-ext-enable mcrypt \
+    && curl -sS https://getcomposer.org/installer | php \
+    && mv composer.phar /usr/local/bin/composer \
     && pecl install redis && docker-php-ext-enable redis \
     && pecl install swoole && docker-php-ext-enable swoole \
     && apt-get install -y systemctl \

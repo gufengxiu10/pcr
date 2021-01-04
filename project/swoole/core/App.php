@@ -1,26 +1,25 @@
 <?php
 
-namespace Croe;
+namespace Anng;
 
+use ReflectionClass;
 
 class App
 {
     private $service;
 
-    public function __construct()
+    public function start()
     {
-        $this->service = new Swoole\WebSocket\Server('0.0.0.0', 9502);
+        $this->service = new \Swoole\WebSocket\Server('0.0.0.0', 9502);
+        $this->service->on('open', [$this->ico('Open'), 'run']);
+        $this->service->on('message', [$this->ico('Message'), 'run']);
+        $this->service->start();
     }
 
-
-    public function onOpen($ws, $request)
+    public function ico($method, ...$argc)
     {
-        # code...
-    }
-
-    public function run()
-    {
-        $this->service->on('open', function ($ws, $request) {
-        });
+        $className = "\App\Event\\" . $method;
+        $class = new ReflectionClass($className);
+        return $class->newInstanceArgs($argc);
     }
 }
