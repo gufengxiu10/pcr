@@ -1,6 +1,7 @@
 <?php
 
+use Anng\lib\App;
 
-require_once "vendor/autoload.php";
+require_once './core/Base.php';
 
-(new \Anng\App())->start();
+(new App())->start();

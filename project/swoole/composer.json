@@ -3,12 +3,17 @@
         "psr-4": {
             "Anng\\": "core/",
             "App\\": "app/"
-        }
+        },
+        "files": [
+            "core/Helper.php"
+        ]
     },
     "require": {
         "swlib/saber": "^1.0",
         "symfony/var-dumper": "^5.2",
         "symfony/finder": "^5.2",
-        "swoolex/swoolex": "^1.2"
+        "swoolex/swoolex": "^1.2",
+        "vlucas/phpdotenv": "^5.2",
+        "hyperf/crontab": "^2.1"
     }
 }
