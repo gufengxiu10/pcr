@@ -50,12 +50,25 @@ services:
         ipv4_address: 172.200.1.2
     volumes:
       - ./setting/php/php.ini:/usr/local/etc/php/php.ini
-      - ./project:/www
+      - ./project/php/:/www
       - ./setting/minio/data:/images
       - ./setting/php/supervisord.conf:/etc/supervisor/supervisord.conf
       - ./setting/php/entrypoint.sh:/usr/local/bin/entrypoint.sh
       - ./setting/php/supervisord/conf/:/etc/supervisor/conf.d/
       - ./setting/php/supervisord/log/:/tmp/supervisord/
+  pyton:
+    container_name: pcr_py
+    image: python
+    privileged: true
+    restart: always
+    stdin_open: true
+    tty: true
+    working_dir: /www
+    networks:
+      pcr:
+        ipv4_address: 172.200.1.5
+    volumes:
+      - ./setting/PixivBiu:/www/PixivBiu
 networks:
   pcr:
     external: true
