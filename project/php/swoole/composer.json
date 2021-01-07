@@ -14,6 +14,8 @@
         "symfony/finder": "^5.2",
         "swoolex/swoolex": "^1.2",
         "vlucas/phpdotenv": "^5.2",
-        "hyperf/crontab": "^2.1"
+        "hyperf/crontab": "^2.1",
+        "swlib/archer": "^1.1",
+        "predis/predis": "^1.1"
     }
 }

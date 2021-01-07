@@ -1,10 +1,10 @@
 <?php
 
-require_once "vendor/autoload.php";
+$path = dirname(__DIR__);
+require_once $path . "/vendor/autoload.php";
 
 use Predis\Client;
 use Swlib\SaberGM;
-
 
 go(function () {
     $client = new Client(['host' => '172.200.1.7', 'port'   => 6379, 'parameters' => [

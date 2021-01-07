@@ -1,4 +1,5 @@
 {
     "python.formatting.provider": "yapf",
+    "easysass.targetDir": "./css",
     "python.pythonPath": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python39\\python.exe"
 }

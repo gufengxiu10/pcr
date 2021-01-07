@@ -45,6 +45,8 @@ services:
     working_dir: /www
     expose:
       - "9000"
+    links:
+      - pyton
     networks:
       pcr:
         ipv4_address: 172.200.1.2
@@ -58,17 +60,62 @@ services:
       - ./setting/php/supervisord/log/:/tmp/supervisord/
   pyton:
     container_name: pcr_py
-    image: python
+    build: ./setting/python
     privileged: true
     restart: always
     stdin_open: true
     tty: true
     working_dir: /www
+    expose:
+      - "4001"
     networks:
       pcr:
         ipv4_address: 172.200.1.5
     volumes:
-      - ./setting/PixivBiu:/www/PixivBiu
+      - ./project/python:/www
+      - ./setting/python/pip.conf:/root/.pip/pip.conf
+      - ./setting/minio/data/pcr:/images
+      - ./setting/python/entrypoint.sh:/usr/local/bin/entrypoint.sh
+      - ./setting/python/supervisord/conf/:/etc/supervisor/conf.d/
+      - ./setting/python/supervisord/log/:/tmp/supervisord/
+  nginx:
+    container_name: pcr_nginx
+    build:
+      context: ./setting/nginx
+    networks:
+      pcr:
+        ipv4_address: 172.200.1.6
+    ports:
+      - "81:80"
+    privileged: true
+    restart: always
+    links:
+      - pyton
+    volumes:
+      - ./setting/nginx/conf/nginx.conf:/etc/nginx/nginx.conf
+      - ./setting/nginx/conf/conf.d:/etc/nginx/conf.d
+      - ./setting/nginx/log:/var/log/nginx
+  redis:
+    container_name: pcr_redis
+    build: ./setting/redis
+    privileged: true
+    restart: always
+    stdin_open: true
+    tty: true
+    networks:
+      pcr:
+        ipv4_address: 172.200.1.7
+    expose: 
+      - "6379"
+    ports:
+      - "12000:6379"
+    volumes:
+      - ./setting/redis/conf/redis.conf:/usr/local/etc/redis/redis.conf
+    sysctls:
+      - net.core.somaxconn=1024
+    command: > # 注意多个命令时的写法
+      bash -c "echo 'vm.overcommit_memory = 1' >> /etc/sysctl.conf
+      && redis-server /usr/local/etc/redis/redis.conf --appendonly yes"
 networks:
   pcr:
     external: true
