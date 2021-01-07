@@ -40,7 +40,7 @@ class Message
                         "message" => [
                             "type" => "image",
                             "data" => [
-                                "file" => "http://172.200.1.4:9000/pcr/17810/謹賀新年.jpg",
+                                "file" => "http://172.200.1.4:9000/pcr/49260/[work] 陰陽師本格幻想RPG.jpg",
                             ]
                         ]
                     ],
