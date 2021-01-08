@@ -4,6 +4,6 @@ use App\Controller\Group\Price;
 
 return [
     'group' => [
-        '你好' => [Price::class, 'sendImg']
+        '来一图' => [Price::class, 'sendImg']
     ]
 ];

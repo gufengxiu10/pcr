@@ -10,6 +10,7 @@ class Price
     public function __construct($data, $ws)
     {
         $this->ws = $ws;
+        $this->data = $data;
     }
 
     public function sendImg()
@@ -17,11 +18,11 @@ class Price
         $postData = [
             "action"        => "send_group_msg",
             "params" => [
-                "group_id" => "415446505",
+                "group_id" => $this->data['group_id'],
                 "message" => [
                     "type" => "image",
                     "data" => [
-                        "file" => "http://172.200.1.4:9000/pcr/49260/[work] 陰陽師本格幻想RPG.jpg",
+                        "file" => "http://172.200.1.4:9000/pcr/1236873/正月特番の舞台裏.jpg",
                     ]
                 ]
             ],
