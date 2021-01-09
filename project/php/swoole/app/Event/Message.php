@@ -2,6 +2,7 @@
 
 namespace App\Event;
 
+use Anng\lib\App;
 use Predis\Client;
 use ReflectionClass;
 use Symfony\Component\Finder\Finder;
@@ -11,6 +12,12 @@ class Message
     private $ws;
     private $frame;
     private $data = [];
+    private $app;
+
+    public function __construct(App $app)
+    {
+        $this->app = $app;
+    }
 
     public function run($ws, $frame)
     {
@@ -18,6 +25,7 @@ class Message
             'password' => "gufengxiu10",
             'database' => 10,
         ]]);
+
         $this->redis->auth('gufengxiu10');
         $this->checkCq();
         $this->ws = $ws;
@@ -36,7 +44,6 @@ class Message
      */
     public function checkCq()
     {
-        //{"meta_event_type":"lifecycle","post_type":"meta_event","self_id":1422306618,"sub_type":"connect","time":1610087573}
         if (
             is_array($this->data)
             && array_key_exists('post_type', $this->data)
@@ -57,20 +64,22 @@ class Message
             $data = array_merge($data, $d);
         }
         if (is_array($this->data) && array_key_exists('post_type', $this->data) && $this->data['post_type'] == 'message') {
-            if (!empty($data) && $this->data['message_type'] == 'group' && array_key_exists($this->data['message'], $data['group'])) {
-                list($controller, $menth) = $data['group'][$this->data['message']];
-                $ref = new ReflectionClass($controller);
-                $object = $ref->getConstructor() === null ? $object = $ref->newInstanceArgs() : $object = $ref->newInstanceArgs([$this->data, $this->ws, $this->frame]);
-                $object->$menth();
-            }
-        }
-    }
+            if (!empty($data) && $this->data['message_type'] == 'group') {
+                $current = [];
+                foreach ($data[$this->data['message_type']] as $value) {
+                    if (!in_array($this->data['message'], $value['key'])) {
+                        continue;
+                    }
+                    $current = $value;
+                }
 
-    public function crontablSendMessage($data)
-    {
-
-        foreach ($data['lists'] as $value) {
-            if ($value == 'toDayPrice') {
+                if (!empty($current)) {
+                    $controller = $current['class'];
+                    $method = $current['method'];
+                    $ref = new ReflectionClass($controller);
+                    $object = $ref->getConstructor() === null ? $object = $ref->newInstanceArgs() : $object = $ref->newInstanceArgs([$this->data, $this->ws, $this->frame]);
+                    $object->$method();
+                }
             }
         }
     }

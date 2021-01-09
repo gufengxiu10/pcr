@@ -8,5 +8,6 @@ class Open
 {
     public function run($ws, $request)
     {
+        
     }
 }

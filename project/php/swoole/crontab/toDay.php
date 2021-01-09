@@ -22,18 +22,23 @@ go(function () {
     }
 
     $data = json_decode($client->get($toDay), true);
+    $time = 10000;
     foreach ($data['msg']['rst']['data'] as $key => $value) {
         $value = $value['all'];
         if (count($value['meta_pages']) == 0) {
-            sleep(2);
-            $res = SaberGM::get('http://172.200.1.5:4001/api/biu/do/dl', [
-                "uri_query" => [
-                    'kt'    => '日榜',
-                    'workID' => $value['id'],
-                    'data' => json_encode($value)
-                ]
-            ])->getBody();
-            dump(json_decode($res, true)['msg']['way']);
+            Swoole\Timer::after($time * $key, function ($value) {
+                $res = SaberGM::get('http://172.200.1.5:4001/api/biu/do/dl', [
+                    "uri_query" => [
+                        'kt'    => date('Ymd'),
+                        'workID' => $value['id'],
+                        'data' => json_encode($value)
+                    ]
+                ])->getBody();
+                dump(json_decode($res, true)['msg']['way']);
+            }, $value);
         }
     }
+
+
+    dump(Swoole\Timer::stats());
 });

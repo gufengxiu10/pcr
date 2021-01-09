@@ -3,23 +3,61 @@
 namespace Anng\lib;
 
 use ReflectionClass;
+use Symfony\Component\Finder\Finder;
 
-class App
+class App extends Container
 {
     private $service;
+
+    //根目录
+    protected $rootPath;
+
+
+    protected array $bind = [
+        'Config' => Config::class,
+        'Finder' => Finder::class,
+    ];
+
+    public function __construct()
+    {
+        $this->rootPath = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR;
+        $this->init();
+    }
+
+
+    public function init()
+    {
+        $configPath = $this->getConfigPath();
+        //加载配置文件
+        $files = [];
+        if (is_dir($configPath)) {
+            $files = glob($configPath . '*.php');
+        }
+
+        foreach ($files as $file) {
+            $this->config->load($file, pathinfo($file, PATHINFO_FILENAME));
+        }
+    }
 
     public function start()
     {
         $this->service = new \Swoole\WebSocket\Server('0.0.0.0', 9502);
         $this->service->on('open', [$this->ico('Open'), 'run']);
-        $this->service->on('message', [$this->ico('Message'), 'run']);
+        $this->service->on('message', [$this->ico('Message', $this), 'run']);
         $this->service->start();
     }
+
 
     public function ico($method, ...$argc)
     {
         $className = "\App\Event\\" . $method;
-        $class = new ReflectionClass($className);
-        return $class->newInstanceArgs($argc);
+        $reflect = new ReflectionClass($className);
+        $object = $reflect->getConstructor() ? $reflect->newInstanceArgs($argc) : $reflect->newInstanceArgs([]);
+        return $object;
+    }
+
+    public function getConfigPath()
+    {
+        return $this->rootPath . 'config' . DIRECTORY_SEPARATOR;
     }
 }
