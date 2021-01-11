@@ -22,7 +22,6 @@ class Message
     public function run($ws, $frame)
     {
         $this->redis = new Client(['host' => '172.200.1.7', 'port'   => 6379, 'parameters' => [
-            'password' => "gufengxiu10",
             'database' => 10,
         ]]);
 

@@ -8,9 +8,11 @@ use Dotenv\Dotenv;
 
 class Env
 {
-    public function __construct()
+    protected $app;
+    
+    public function __construct(App $app)
     {
-        $this->loading();
+        $this->app = $app;
     }
 
     /**
@@ -23,7 +25,7 @@ class Env
      */
     public function loading()
     {
-        $dotenv = Dotenv::createMutable(realpath(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..'));
+        $dotenv = Dotenv::createMutable(realpath($this->app->getEnv()));
         $dotenv->load();
     }
 

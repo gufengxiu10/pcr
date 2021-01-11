@@ -1,5 +1,18 @@
 {
     "python.formatting.provider": "yapf",
     "easysass.targetDir": "./css",
-    "python.pythonPath": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python39\\python.exe"
+    "python.pythonPath": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python39\\python.exe",
+    "fileheader.customMade": {
+        "Description": "", //文件内容描述
+        "Author": "ANNG", //编辑人
+        "Date": "Do not edit", //时间
+        "LastEditTime": "Do not edit",
+        "LastEditors": "ANNG"
+    },
+    "fileheader.cursorMode": {
+        "name": "",
+        "author": "ANNG",
+        "Date": "Do not edit", //时间
+        "return": ""
+    },
 }

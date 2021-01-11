@@ -23,7 +23,11 @@ class Config
             $config = include $file;
         }
 
-        $this->config = array_merge($this->config, $config);
+        if (!empty($name)) {
+            $this->config[$name] = $config;
+        } else {
+            $this->config = array_merge($this->config, $config);
+        }
 
         return $this->config;
     }

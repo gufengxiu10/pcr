@@ -16,6 +16,7 @@ class App extends Container
     protected array $bind = [
         'Config' => Config::class,
         'Finder' => Finder::class,
+        'Redis'  => Redis::class
     ];
 
     public function __construct()
@@ -41,6 +42,7 @@ class App extends Container
 
     public function start()
     {
+        dd($this->redis->connect());
         $this->service = new \Swoole\WebSocket\Server('0.0.0.0', 9502);
         $this->service->on('open', [$this->ico('Open'), 'run']);
         $this->service->on('message', [$this->ico('Message', $this), 'run']);
@@ -56,8 +58,25 @@ class App extends Container
         return $object;
     }
 
-    public function getConfigPath()
+    /**
+     * @name: 配置目录
+     * @author: ANNG
+     * @Date: 2021-01-11 09:38:21
+     * @return string
+     */
+    public function getConfigPath(): string
     {
         return $this->rootPath . 'config' . DIRECTORY_SEPARATOR;
+    }
+
+    /**
+     * @name: Env位置
+     * @author: ANNG
+     * @Date: 2021-01-11 09:41:40
+     * @return string
+     */
+    public function getEnv()
+    {
+        return $this->rootPath;
     }
 }
