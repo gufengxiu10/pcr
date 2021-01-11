@@ -29,5 +29,7 @@ class Redis
         if (!empty($this->config['auth'])) {
             $this->redis->auth($this->config['auth']);
         }
+
+        return $this;
     }
 }
