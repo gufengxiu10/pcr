@@ -2,7 +2,7 @@
 
 return [
     'host'      => "172.200.1.7",
-    'prot'      => 9502,
+    'port'      => 6379,
     'auth'      => 'gufengxiu10',
     'default'   => 0
 ];

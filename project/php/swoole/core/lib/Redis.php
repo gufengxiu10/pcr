@@ -17,19 +17,36 @@ class Redis
     {
         $this->app = $app;
         $this->config = $this->app->config->get('redis');
+        $this->connect();
     }
 
-    public function connect()
+    /**
+     * @name: 实例化
+     * @param {*}
+     * @author: ANNG
+     * @todo: 
+     * @Date: 2021-01-12 13:52:17
+     * @return {*}
+     */
+    public function connect(): void
     {
-        $this->redis = $this->app->config->make(Client::class, [
+        $this->redis = $this->app->make(Client::class, [[
             'host' => $this->config['host'],
             'port' => $this->config['port'],
-        ]);
+        ]]);
+
+        // $this->redis = new Client([
+        //     'host' => $this->config['host'],
+        //     'port' => $this->config['port'],
+        // ]);
 
         if (!empty($this->config['auth'])) {
             $this->redis->auth($this->config['auth']);
         }
+    }
 
-        return $this;
+    public function __call($method, $argc)
+    {
+        return $this->redis->$method(...$argc);
     }
 }

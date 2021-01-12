@@ -21,11 +21,6 @@ class Message
 
     public function run($ws, $frame)
     {
-        $this->redis = new Client(['host' => '172.200.1.7', 'port'   => 6379, 'parameters' => [
-            'database' => 10,
-        ]]);
-
-        $this->redis->auth('gufengxiu10');
         $this->checkCq();
         $this->ws = $ws;
         $this->frame = $frame;
@@ -50,7 +45,7 @@ class Message
             && $this->data['post_type'] = 'meta_event'
             && $this->data['meta_event_type'] = 'lifecycle'
         ) {
-            $this->redis->set('cqFd', $this->frame->fd);
+            $this->app->redis->set('cqFd', $this->frame->fd);
         }
     }
 
@@ -76,7 +71,7 @@ class Message
                     $controller = $current['class'];
                     $method = $current['method'];
                     $ref = new ReflectionClass($controller);
-                    $object = $ref->getConstructor() === null ? $object = $ref->newInstanceArgs() : $object = $ref->newInstanceArgs([$this->data, $this->ws, $this->frame]);
+                    $object = $ref->getConstructor() === null ? $object = $ref->newInstanceArgs() : $object = $ref->newInstanceArgs([$this->data, $this->ws, $this->frame, $this->app]);
                     $object->$method();
                 }
             }

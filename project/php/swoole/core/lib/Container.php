@@ -113,13 +113,12 @@ class Container implements ContainerInterface
         return $object;
     }
 
-    public function inovkeClass($class)
+    public function inovkeClass($class, $vars = [])
     {
         $reflect = new ReflectionClass($class);
 
         $constructor = $reflect->getConstructor();
-        $args = $constructor ? [$this] : [];
-
+        $args = $constructor ? ($vars ?: [$this]) : [];
         $object = $reflect->newInstanceArgs($args);
         return $object;
     }

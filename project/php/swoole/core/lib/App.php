@@ -42,7 +42,6 @@ class App extends Container
 
     public function start()
     {
-        dd($this->redis->connect());
         $this->service = new \Swoole\WebSocket\Server('0.0.0.0', 9502);
         $this->service->on('open', [$this->ico('Open'), 'run']);
         $this->service->on('message', [$this->ico('Message', $this), 'run']);
