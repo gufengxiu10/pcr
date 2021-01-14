@@ -10,6 +10,9 @@ password = "Freedomx102"
 
 
 def main():
+    local_time = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S+00:00')
+    print(local_time)
+    return
     # timeout = 3
     # hostname = "app-api.pixiv.net"
     # url = "https://1.0.0.1/dns-query"  # 先使用1.0.0.1的地址
