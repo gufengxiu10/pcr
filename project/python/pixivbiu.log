@@ -1,15 +1,16 @@
 [pixivbiu] 检测网络状态...
 [pixivbiu] 无法访问 pixiv，启用 byPassSni api
+[pixivbiu] 读取 token 成功
 [pixivbiu] byPassSni api 登录成功
 [pixivbiu] 初始化完成
 ------------
 [1;37;40m PixivBiu [0m
 -
-运行: [32mhttp://0.0.0.0:4001/[0m (将地址输入现代浏览器即可使用)
+运行: [32mhttp://127.0.0.1:4001/[0m (将地址输入现代浏览器即可使用)
 版本: 200008 (最新)
 API 类型: byPassSni
 图片服务器: https://i.pixiv.cat/
-下载保存路径: /images/{KT}/
+下载保存路径: 程序目录/downloads/{KT}/
 -
 [1;37;40m Biu [0m
 ------------
@@ -17,4 +18,9 @@ API 类型: byPassSni
  * Environment: production
    WARNING: This is a development server. Do not use it in a production deployment.
    Use a production WSGI server instead.
- * Debug mode: off
+ * Debug mode: on
+ * Running on http://127.0.0.1:4001/ (Press CTRL+C to quit)
+ * Restarting with stat
+现端口已被占用，请修改 config.yml 中 sys-host 配置。
+按任意键退出... * Debugger is active!
+ * Debugger PIN: 293-415-685

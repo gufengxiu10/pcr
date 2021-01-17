@@ -3,7 +3,6 @@
 namespace App\Event;
 
 use Anng\lib\App;
-use Predis\Client;
 use ReflectionClass;
 use Symfony\Component\Finder\Finder;
 
@@ -21,6 +20,20 @@ class Message
 
     public function run($ws, $frame)
     {
+        // $postData = [
+        //     "action"        => "send_group_msg",
+        //     "params" => [
+        //         "group_id"      => 415446505,
+        //         "message" => [
+        //             "type" => "image",
+        //             "data" => [
+        //                 "file" => "http://172.200.1.4:9000/pcr/default.png",
+        //             ]
+        //         ]
+        //     ],
+        // ];
+        // $ws->push($frame->fd, json_encode($postData, JSON_UNESCAPED_UNICODE));
+        $this->app->crontab->setWs($ws);
         $this->checkCq();
         $this->ws = $ws;
         $this->frame = $frame;

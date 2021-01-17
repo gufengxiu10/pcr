@@ -16,7 +16,8 @@ class App extends Container
     protected array $bind = [
         'Config' => Config::class,
         'Finder' => Finder::class,
-        'Redis'  => Redis::class
+        'Redis'  => Redis::class,
+        'Crontab' => Crontab::class
     ];
 
     public function __construct()

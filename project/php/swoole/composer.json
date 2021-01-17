@@ -17,6 +17,8 @@
         "hyperf/crontab": "^2.1",
         "swlib/archer": "^1.1",
         "predis/predis": "^1.1",
-        "psr/container": "^1.0"
+        "psr/container": "^1.0",
+        "guzzlehttp/guzzle": "^7.0",
+        "vectorface/whip": "^0.4.0"
     }
 }
