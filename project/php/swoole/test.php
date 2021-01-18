@@ -5,6 +5,18 @@ use Vectorface\Whip\Whip;
 
 require_once "vendor/autoload.php";
 
+go(function () {
+    $cli = new \Swoole\Coroutine\Http\Client('172.200.1.5', 80);
+    $cli->setMethod('get');
+    $cli->setData([
+        'mode' => 'day',
+        'totalPage' => 5,
+    ]);
+    $status = $cli->execute('/api/biu/get/rank');
+    dump(json_decode($cli->getBody(), true));
+});
+
+dd(1);
 $client = new Client();
 
 while (1) {

@@ -10,35 +10,39 @@ class Download
 {
     public function download()
     {
-        $client = new Client();
-        $date = date('Y-m-d', strtotime("-10 day"));
-        // dd(date('Y-m-d',strtotime("-1 day")));
-        $body = $client->request('GET', 'http://172.200.1.5/api/biu/get/rank', [
-            'query' => [
-                // ?mode=day&totalPage=5&groupIndex=0
-                'mode' => 'day',
-                'totalPage' => 5,
-                'date' => $date
-            ]
-        ])->getBody();
 
-
-        $data = json_decode($body->getContents(), true);
-        foreach ($data['msg']['rst']['data'] as $key => $val) {
-            dump($key);
-            $body = $client->request('GET', 'http://172.200.1.5:4001/api/biu/do/dl', [
-                'query' => [
+        $cli = new \Swoole\Coroutine\Http\Client('172.200.1.5', 80);
+        $cli->setMethod('get');
+        $cli->setData([
+            'mode' => 'day',
+            'totalPage' => 5,
+        ]);
+        $status = $cli->execute('/api/biu/get/rank');
+        if ($status == true) {
+            $data = json_decode($cli->getBody(), true);
+            foreach ($data['msg']['rst']['data'] as $key => $val) {
+                $date = date('Y-m-d', strtotime("-10 day"));
+                $cli->setMethod('get');
+                $cli->setData([
                     "kt" => $date,
                     "workId" => $val['all']['id'],
                     "data" => json_encode($val['all'], JSON_UNESCAPED_UNICODE)
-                ]
-            ])->getBody();
+                ]);
+                $status = $cli->execute('/api/biu/do/dl');
+                dump($key . '-' . $status);
+            }
         }
     }
 
 
     public function check()
     {
-        # code...
+        $cli = new \Swoole\Coroutine\Http\Client('172.200.1.5', 80);
+        $cli->setMethod('get');
+        $cli->setData([
+            'mode' => 'day',
+            'totalPage' => 5,
+        ]);
+        $status = $cli->execute('/api/biu/get/rank');
     }
 }

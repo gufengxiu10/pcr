@@ -33,7 +33,6 @@ class Message
         //     ],
         // ];
         // $ws->push($frame->fd, json_encode($postData, JSON_UNESCAPED_UNICODE));
-        $this->app->crontab->setWs($ws);
         $this->checkCq();
         $this->ws = $ws;
         $this->frame = $frame;

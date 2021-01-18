@@ -13,12 +13,13 @@ class Rank
 
     public function __construct(App $app)
     {
-        $this->app = $app;
-        $this->config = $this->config->get('api')['pixiv_biu'];
-        $this->api = -$this->config['api'];
-        $this->client = new Client([
-            'base_uri' => $this->config['host'] . ':' . $this->config['prot'] . '/'
-        ]);
+        dump(1);
+        // $this->app = $app;
+        // $this->config = $this->config->get('api')['pixiv_biu'];
+        // $this->api = -$this->config['api'];
+        // $body = $this->client = new Client([
+        //     'base_uri' => $this->config['host'] . ':' . $this->config['prot'] . '/'
+        // ]);
     }
 
     /**

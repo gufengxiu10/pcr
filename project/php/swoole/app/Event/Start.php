@@ -3,16 +3,16 @@
 namespace App\Event;
 
 use Anng\lib\App;
-use Hyperf\Crontab\Crontab;
 
-class Open
+class Start
 {
     public function __construct(App $app)
     {
         $this->app = $app;
     }
 
-    public function run($ws, $request)
+    public function run($ws)
     {
+        $this->app->crontab->setWs($ws);
     }
 }

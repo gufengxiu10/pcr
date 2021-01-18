@@ -32,7 +32,7 @@ class Crontab
     {
         \Swoole\Timer::tick(1000, function ($timeId) {
             $this->getTime();
-            dump($this->second);
+            dump($this->minute . ':' . $this->second);
             foreach ($this->task as $val) {
                 $this->send($val);
             }
@@ -140,7 +140,9 @@ class Crontab
             && $this->second != $word['second']
         ) {
             throw new Exception('时间不能过');
-        } elseif (is_int($this->minute / $word['minute']) === false && $this->second != 0) {
+        } elseif (is_int($this->minute / $word['minute']) == false) {
+            throw new Exception('时间不能过');
+        } elseif (is_int($this->minute / $word['minute']) == true && $this->second != 0) {
             throw new Exception('时间不能过');
         }
     }
