@@ -5,6 +5,15 @@ use Vectorface\Whip\Whip;
 
 require_once "vendor/autoload.php";
 
+
+$d = [
+    'a' => 1,
+    'ab' => 1,
+];
+
+dump(http_build_query($d));
+
+dd(1);
 go(function () {
     $cli = new \Swoole\Coroutine\Http\Client('172.200.1.5', 80);
     $cli->setMethod('get');

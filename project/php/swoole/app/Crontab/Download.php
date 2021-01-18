@@ -10,25 +10,24 @@ class Download
 {
     public function download()
     {
-
+        $date = date('Y-m-d', strtotime("-2 day"));
         $cli = new \Swoole\Coroutine\Http\Client('172.200.1.5', 80);
         $cli->setMethod('get');
-        $cli->setData([
+        $status = $cli->execute('/api/biu/get/rank?' . http_build_query([
             'mode' => 'day',
             'totalPage' => 5,
-        ]);
-        $status = $cli->execute('/api/biu/get/rank');
+            'date'  => $date
+        ]));
         if ($status == true) {
             $data = json_decode($cli->getBody(), true);
             foreach ($data['msg']['rst']['data'] as $key => $val) {
-                $date = date('Y-m-d', strtotime("-10 day"));
+                
                 $cli->setMethod('get');
-                $cli->setData([
+                $status = $cli->execute('/api/biu/do/dl?' . http_build_query([
                     "kt" => $date,
                     "workId" => $val['all']['id'],
                     "data" => json_encode($val['all'], JSON_UNESCAPED_UNICODE)
-                ]);
-                $status = $cli->execute('/api/biu/do/dl');
+                ]));
                 dump($key . '-' . $status);
             }
         }
@@ -38,11 +37,8 @@ class Download
     public function check()
     {
         $cli = new \Swoole\Coroutine\Http\Client('172.200.1.5', 80);
-        $cli->setMethod('get');
-        $cli->setData([
-            'mode' => 'day',
-            'totalPage' => 5,
-        ]);
-        $status = $cli->execute('/api/biu/get/rank');
+        $cli->setMethod('GET');
+        $cli->execute('/api/biu/get/status?type=download&key=__all__');
+        // dump(json_decode($cli->getBody(), true));
     }
 }

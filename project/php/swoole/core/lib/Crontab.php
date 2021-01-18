@@ -135,10 +135,7 @@ class Crontab
      */
     public function timeMinuteCheck($word)
     {
-        if (
-            $word['second'] != '*'
-            && $this->second != $word['second']
-        ) {
+        if ($word['second'] != '*' && $this->second != $word['second']) {
             throw new Exception('时间不能过');
         } elseif (is_int($this->minute / $word['minute']) == false) {
             throw new Exception('时间不能过');
@@ -150,9 +147,9 @@ class Crontab
     public function timeSetDefault($word): array
     {
         if ($word['month'] != '*' && $word['day'] == '*') $word['day'] = 1;
-        if ($word['month'] != '*' && $word['hour'] == '*') $word['hour'] = 0;
-        if ($word['month'] != '*' && $word['minute'] == '*') $word['minute'] = 0;
-        if ($word['month'] != '*' && $word['second'] == '*') $word['second'] = 1;
+        if ($word['hour'] == '*') $word['hour'] = 0;
+        if ($word['minute'] == '*') $word['minute'] = 0;
+        if ($word['second'] == '*') $word['second'] = 0;
         return $word;
     }
 
