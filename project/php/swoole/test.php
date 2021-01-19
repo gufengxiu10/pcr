@@ -4,16 +4,17 @@ use GuzzleHttp\Client;
 use Vectorface\Whip\Whip;
 
 require_once "vendor/autoload.php";
+date_default_timezone_set("Asia/Shanghai");
 
-
-$d = [
-    'a' => 1,
-    'ab' => 1,
-];
-
-dump(http_build_query($d));
-
-dd(1);
+$time = time();
+$second = date('s', $time);
+$minute = date('i', $time);
+$hour = date('H', $time);
+$day = date('d', $time);
+$month = date('m', $time);
+$week = date('W');
+dump($week);
+dd($hour);
 go(function () {
     $cli = new \Swoole\Coroutine\Http\Client('172.200.1.5', 80);
     $cli->setMethod('get');

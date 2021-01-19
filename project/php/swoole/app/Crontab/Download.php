@@ -10,18 +10,18 @@ class Download
 {
     public function download()
     {
-        $date = date('Y-m-d', strtotime("-2 day"));
+        $date = date('Y-m-d', strtotime("-1 day"));
         $cli = new \Swoole\Coroutine\Http\Client('172.200.1.5', 80);
         $cli->setMethod('get');
         $status = $cli->execute('/api/biu/get/rank?' . http_build_query([
             'mode' => 'day',
             'totalPage' => 5,
-            'date'  => $date
+            // 'date'  => $date
         ]));
         if ($status == true) {
             $data = json_decode($cli->getBody(), true);
+            dump($data);
             foreach ($data['msg']['rst']['data'] as $key => $val) {
-                
                 $cli->setMethod('get');
                 $status = $cli->execute('/api/biu/do/dl?' . http_build_query([
                     "kt" => $date,
@@ -30,6 +30,8 @@ class Download
                 ]));
                 dump($key . '-' . $status);
             }
+        } else {
+            dump($cli);
         }
     }
 

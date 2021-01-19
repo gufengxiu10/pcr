@@ -22,6 +22,7 @@ class App extends Container
 
     public function __construct()
     {
+        date_default_timezone_set("Asia/Shanghai");
         $this->rootPath = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR;
         $this->init();
     }

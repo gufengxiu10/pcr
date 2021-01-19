@@ -57,6 +57,8 @@ class Crontab
                 && $word['week'] == '*'
             ) {
                 $this->timeMinuteCheck($word);
+            } elseif ($word['day'] != '*' && $word['month'] == '*' && $word['week'] == '*') {
+                $this->timeDayCheck($word);
             } else {
                 $word = $this->timeSetDefault($word);
                 $this->timeCheck($word, 'month');
@@ -144,6 +146,67 @@ class Crontab
         }
     }
 
+    /**
+     * @name: 天的规则检测
+     * @param {*}
+     * @author: ANNG
+     * @todo: 
+     * @Date: 2021-01-16 14:31:03
+     * @return {*}
+     */
+    public function timeDayCheck($word)
+    {
+        // if ($word['day'] != '*' && $word['month'] == '*' && $word['week'] == '*') {
+        if (is_int($this->day / $word['day']) == false) {
+            $this->error();
+        } else {
+            $this->timeCheck($word, 'second');
+            $this->timeCheck($word, 'minute');
+            $this->timeCheck($word, 'hour');
+            if (is_int($this->day / $word['day']) == true) {
+                if ($word['second'] == '*' && $this->second != 0) {
+                    $this->error();
+                }
+
+                if ($word['minute'] == '*' && $this->minute != 0) {
+                    $this->error();
+                }
+
+                if ($word['hour'] == '*' && $this->hour != 0) {
+                    $this->error();
+                }
+            }
+        }
+        // }
+    }
+
+    /**
+     * @name: 天的规则检测
+     * @param {*}
+     * @author: ANNG
+     * @todo: 
+     * @Date: 2021-01-16 14:31:03
+     * @return {*}
+     */
+    public function timeWeekCheck($word)
+    {
+        if ($word['week'] != '*' && $word['month'] == '*') {
+            if (is_int($this->week / $word['week']) == false) {
+                $this->error();
+            } else {
+                $this->timeCheck($word, 'second');
+                $this->timeCheck($word, 'minute');
+                if (is_int($this->minute / $word['minute']) == true) {
+                    if ($this->second == '*' && $this->second != 0) {
+                        $this->error();
+                    } elseif ($this->minute == '*' && $this->minute != 0) {
+                        $this->error();
+                    }
+                }
+            }
+        }
+    }
+
     public function timeSetDefault($word): array
     {
         if ($word['month'] != '*' && $word['day'] == '*') $word['day'] = 1;
@@ -169,7 +232,7 @@ class Crontab
         $this->hour = $this->deleteZero(date('H', $time));
         $this->day = $this->deleteZero(date('d', $time));
         $this->month = $this->deleteZero(date('m', $time));
-        $this->week = $this->deleteZero(date('2', $time));
+        $this->week = $this->deleteZero(date('W', $time));
     }
 
     /**
@@ -178,5 +241,10 @@ class Crontab
     private function deleteZero($str)
     {
         return intval($str);
+    }
+
+    private  function error()
+    {
+        throw new Exception('时间不通过');
     }
 }
