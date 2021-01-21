@@ -19,6 +19,8 @@ RUN cd /etc/apt \
     && echo "trusted-host=mirrors.aliyun.com" >> pip.conf \
     && pip install flask && pip install requests && pip install pyyaml \
     && pip install Pillow && pip install pixivpy && pip install python-dotenv \
+    # GotoX
+    && pip install gevent && pip install pyOpenSSl && pip install dnslib && pip install socksipy-branch \
     && apt-get install -y supervisor
 
 

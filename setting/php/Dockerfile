@@ -1,4 +1,4 @@
-FROM php:7.4-fpm
+FROM phpswoole/swoole
 
 # 工作目录
 WORKDIR /www
@@ -16,12 +16,14 @@ RUN cd /etc/apt \
     && apt-get update \
     # && pecl install mcrypt \
     # && docker-php-ext-enable mcrypt \
-    && curl -sS https://getcomposer.org/installer | php \
-    && mv composer.phar /usr/local/bin/composer \
+    # && curl -sS https://getcomposer.org/installer | php \
+    # && mv composer.phar /usr/local/bin/composer \
     && pecl install redis && docker-php-ext-enable redis \
-    && pecl install swoole && docker-php-ext-enable swoole \
+    # && pecl install swoole && docker-php-ext-enable swoole \
     && apt-get install -y systemctl \
+    && apt-get install -y procps \
     && apt-get install -y supervisor \
+    && apt-get install -y iputils-ping \
     && apt-get install -y apt-utils \
     && apt-get install -y cron \
     && apt-get install -y vim \
@@ -33,7 +35,8 @@ RUN cd /etc/apt \
     && apt-get install -y --no-install-recommends libgmp-dev \
     && docker-php-ext-install -j$(nproc) gmp \
     && apt-get install -y --no-install-recommends libxml2-dev libtidy-dev libxslt1-dev \
-    && docker-php-ext-install -j$(nproc) soap xmlrpc tidy xsl \
+    # xmlrpc
+    && docker-php-ext-install -j$(nproc) soap tidy xsl \
     && apt-get install -y --no-install-recommends libzip-dev \
     && docker-php-ext-install -j$(nproc) zip \
     && apt-get install -y --no-install-recommends libsnmp-dev \
@@ -61,6 +64,6 @@ RUN cd /etc/apt \
 
 ADD ./entrypoint.sh /usr/local/bin/
 
-ENTRYPOINT ["entrypoint.sh"]
+# ENTRYPOINT ["entrypoint.sh"]
 
-CMD ["php-fpm"]
+# CMD ["php-fpm"]
