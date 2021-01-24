@@ -2,3 +2,6 @@ setting/goCqhttp/file
 vendor
 cqhttp
 *.log
+*.jpg
+*.png
+*.log
