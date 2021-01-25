@@ -1,21 +1,24 @@
 package main
 
 import (
+	"io"
 	"net/http"
+	"os"
 )
 
 func main() {
 
 	client := &http.Client{}
-	client.Get("https://pixiviz.pwp.app/rank")
-	// res, _ := client.Get("https://w.wallhaven.cc/full/72/wallhaven-7232p9.jpg")
-	// defer res.Body.Close()
+	// client.Get("https://pixiviz.pwp.app/rank")
+	res, _ := client.Get("https://w.wallhaven.cc/full/72/wallhaven-7232p9.jpg")
 
-	// out, _ := os.Create("./1.jpg")
-	// defer out.Close()
+	defer res.Body.Close()
 
-	// _, err := io.Copy(out, res.Body)
-	// if err != nil {
-	// 	panic(err)
-	// }
+	out, _ := os.Create("./1.jpg")
+	defer out.Close()
+
+	_, err := io.Copy(out, res.Body)
+	if err != nil {
+		panic(err)
+	}
 }

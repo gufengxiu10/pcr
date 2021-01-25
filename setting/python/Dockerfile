@@ -26,6 +26,6 @@ RUN cd /etc/apt \
 
 ADD ./entrypoint.sh /usr/local/bin/
 
-ENTRYPOINT [ "entrypoint.sh" ]
+# ENTRYPOINT [ "entrypoint.sh" ]
 
-CMD [ "python3"]
+# CMD [ "python3"]
