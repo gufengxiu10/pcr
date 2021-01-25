@@ -75,7 +75,7 @@ services:
       - ./project/python:/www
       - ./setting/python/pip.conf:/root/.pip/pip.conf
       - ./setting/minio/data/pcr:/images
-      - ./setting/python/entrypoint.sh:/usr/local/bin/entrypoint.sh
+      # - ./setting/python/entrypoint.sh:/usr/local/bin/entrypoint.sh
       - ./setting/python/supervisord/conf/:/etc/supervisor/conf.d/
       - ./setting/python/supervisord/log/:/tmp/supervisord/
   nginx:
