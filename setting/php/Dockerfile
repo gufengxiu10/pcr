@@ -1,4 +1,4 @@
-FROM phpswoole/swoole:php7.4
+FROM phpswoole/swoole:latest
 
 # 工作目录
 WORKDIR /www

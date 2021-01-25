@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "acdb44d495ccfe59d97d173a1f267528",
+    "content-hash": "2e8ce0ae3ab588ab6fee29d50a327d0c",
     "packages": [
         {
             "name": "aliyuncs/oss-sdk-php",
@@ -766,17 +766,253 @@
             "time": "2019-03-08T08:55:37+00:00"
         },
         {
-            "name": "swoolex/swoolex",
-            "version": "v1.2.27",
+            "name": "swlib/archer",
+            "version": "1.1.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/swoolex/swoolex.git",
-                "reference": "9a2ca9a4a8a18ba8d452d5ef3e0281ee5485f0f9"
+                "url": "https://github.com/swlib/archer.git",
+                "reference": "8d2c6b238ab1e4be4a69ce3cc53d4f33824760af"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swoolex/swoolex/zipball/9a2ca9a4a8a18ba8d452d5ef3e0281ee5485f0f9",
-                "reference": "9a2ca9a4a8a18ba8d452d5ef3e0281ee5485f0f9",
+                "url": "https://api.github.com/repos/swlib/archer/zipball/8d2c6b238ab1e4be4a69ce3cc53d4f33824760af",
+                "reference": "8d2c6b238ab1e4be4a69ce3cc53d4f33824760af",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "php": ">=7.1"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/Archer.php"
+                ],
+                "psr-4": {
+                    "Swlib\\Archer\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "description": "Swoole coroutine task kit",
+            "keywords": [
+                "client",
+                "coroutine",
+                "php",
+                "psr7",
+                "swoole",
+                "task",
+                "timer"
+            ],
+            "support": {
+                "issues": "https://github.com/swlib/archer/issues",
+                "source": "https://github.com/swlib/archer/tree/master"
+            },
+            "time": "2020-07-17T08:55:53+00:00"
+        },
+        {
+            "name": "swlib/http",
+            "version": "v1.0.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/swlib/http.git",
+                "reference": "e97d9d05b741d4ee7ef58824a280acf983354d5e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/swlib/http/zipball/e97d9d05b741d4ee7ef58824a280acf983354d5e",
+                "reference": "e97d9d05b741d4ee7ef58824a280acf983354d5e",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "php": ">=7.1",
+                "psr/http-message": "~1.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~7"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/functions.php"
+                ],
+                "psr-4": {
+                    "Swlib\\Http\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "twosee",
+                    "email": "twose@qq.com"
+                }
+            ],
+            "description": "Swlib-HTTP base class repository, PSR implementation",
+            "keywords": [
+                "http",
+                "php",
+                "psr7",
+                "swoole"
+            ],
+            "support": {
+                "issues": "https://github.com/swlib/http/issues",
+                "source": "https://github.com/swlib/http/tree/v1.x"
+            },
+            "time": "2020-08-15T10:36:45+00:00"
+        },
+        {
+            "name": "swlib/saber",
+            "version": "v1.0.16",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/swlib/saber.git",
+                "reference": "7dcecc72cbaa475bf980e4284a734309e0158e97"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/swlib/saber/zipball/7dcecc72cbaa475bf980e4284a734309e0158e97",
+                "reference": "7dcecc72cbaa475bf980e4284a734309e0158e97",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "php": ">=7.1",
+                "swlib/http": "^1.0",
+                "swlib/util": "^1.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~7"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/Saber.php",
+                    "src/SaberGM.php"
+                ],
+                "psr-4": {
+                    "Swlib\\Saber\\": "src"
+                },
+                "files": [
+                    "src/include/functions.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "twosee",
+                    "email": "twose@qq.com"
+                }
+            ],
+            "description": "Swoole coroutine HTTP client",
+            "keywords": [
+                "ajax",
+                "axios",
+                "client",
+                "coroutine",
+                "curl",
+                "http",
+                "php",
+                "psr7",
+                "requests",
+                "swoole"
+            ],
+            "support": {
+                "issues": "https://github.com/swlib/saber/issues",
+                "source": "https://github.com/swlib/saber/tree/v1.x"
+            },
+            "time": "2020-08-15T10:44:40+00:00"
+        },
+        {
+            "name": "swlib/util",
+            "version": "v1.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/swlib/util.git",
+                "reference": "300f551753702f5bfcbfb814d53bdbf057719a43"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/swlib/util/zipball/300f551753702f5bfcbfb814d53bdbf057719a43",
+                "reference": "300f551753702f5bfcbfb814d53bdbf057719a43",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "php": ">=7.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~7"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Swlib\\Util\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "twosee",
+                    "email": "twose@qq.com"
+                }
+            ],
+            "description": "Swlib Toolkit",
+            "keywords": [
+                "php",
+                "swlib",
+                "swoole",
+                "util"
+            ],
+            "support": {
+                "issues": "https://github.com/swlib/util/issues",
+                "source": "https://github.com/swlib/util/tree/v1.0.3"
+            },
+            "time": "2020-08-24T10:00:58+00:00"
+        },
+        {
+            "name": "swoolex/swoolex",
+            "version": "v1.2.28",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/swoolex/swoolex.git",
+                "reference": "2508ad31acf41b0d69e26da9e12a6d3b5a5b98a7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/swoolex/swoolex/zipball/2508ad31acf41b0d69e26da9e12a6d3b5a5b98a7",
+                "reference": "2508ad31acf41b0d69e26da9e12a6d3b5a5b98a7",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -804,9 +1040,9 @@
             ],
             "support": {
                 "issues": "https://github.com/swoolex/swoolex/issues",
-                "source": "https://github.com/swoolex/swoolex/tree/v1.2.27"
+                "source": "https://github.com/swoolex/swoolex/tree/v1.2.28"
             },
-            "time": "2021-01-23T02:34:28+00:00"
+            "time": "2021-01-25T08:26:12+00:00"
         },
         {
             "name": "symfony/finder",

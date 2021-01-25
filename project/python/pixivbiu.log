@@ -1,5 +1,6 @@
 [pixivbiu] 检测网络状态...
 [pixivbiu] 无法访问 pixiv，启用 byPassSni api
+[pixivbiu] 读取 token 成功
 [pixivbiu] byPassSni api 登录成功
 [pixivbiu] 初始化完成
 ------------
@@ -9,7 +10,7 @@
 版本: 200008 (最新)
 API 类型: byPassSni
 图片服务器: https://i.pixiv.cat/
-下载保存路径: 程序目录/{KT}/
+下载保存路径: 程序目录/downloads/{KT}/
 -
 [1;37;40m Biu [0m
 ------------
