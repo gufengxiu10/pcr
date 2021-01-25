@@ -24,7 +24,7 @@ RUN cd /etc/apt \
     && apt-get install -y supervisor
 
 
-ADD ./entrypoint.sh /usr/local/bin/
+# ADD ./entrypoint.sh /usr/local/bin/
 
 # ENTRYPOINT [ "entrypoint.sh" ]
 
