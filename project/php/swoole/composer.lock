@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2e8ce0ae3ab588ab6fee29d50a327d0c",
+    "content-hash": "578be863aebc16fddc77f46c8cd9c083",
     "packages": [
         {
             "name": "aliyuncs/oss-sdk-php",
@@ -1000,6 +1000,50 @@
                 "source": "https://github.com/swlib/util/tree/v1.0.3"
             },
             "time": "2020-08-24T10:00:58+00:00"
+        },
+        {
+            "name": "swoole/ide-helper",
+            "version": "4.6.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/swoole/ide-helper.git",
+                "reference": "62d923e3406d4d9c5a4749d810d11e2beb201abe"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/swoole/ide-helper/zipball/62d923e3406d4d9c5a4749d810d11e2beb201abe",
+                "reference": "62d923e3406d4d9c5a4749d810d11e2beb201abe",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require-dev": {
+                "guzzlehttp/guzzle": "~6.5.0",
+                "laminas/laminas-code": "~3.4.0",
+                "squizlabs/php_codesniffer": "~3.5.0",
+                "symfony/filesystem": "~4.0"
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Team Swoole",
+                    "email": "team@swoole.com"
+                }
+            ],
+            "description": "IDE help files for Swoole.",
+            "support": {
+                "issues": "https://github.com/swoole/ide-helper/issues",
+                "source": "https://github.com/swoole/ide-helper/tree/4.6.2"
+            },
+            "time": "2021-01-26T00:17:29+00:00"
         },
         {
             "name": "swoolex/swoolex",

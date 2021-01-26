@@ -30,9 +30,8 @@ class Crontab
 
     public function run(): void
     {
-        \Swoole\Timer::tick(1000, function ($timeId) {
+        \Swoole\Timer::tick(1000, function () {
             $this->getTime();
-            dump($this->minute . ':' . $this->second);
             foreach ($this->task as $val) {
                 $this->send($val);
             }

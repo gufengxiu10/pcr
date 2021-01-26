@@ -13,9 +13,8 @@ class Message
     private $data = [];
     private $app;
 
-    public function __construct(App $app)
+    public function __construct()
     {
-        $this->app = $app;
     }
 
     public function run($ws, $frame)
@@ -33,11 +32,11 @@ class Message
         //     ],
         // ];
         // $ws->push($frame->fd, json_encode($postData, JSON_UNESCAPED_UNICODE));
-        $this->checkCq();
-        $this->ws = $ws;
-        $this->frame = $frame;
-        $this->data = json_decode($frame->data, true);
-        $this->control();
+        // $this->checkCq();
+        // $this->ws = $ws;
+        // $this->frame = $frame;
+        // $this->data = json_decode($frame->data, true);
+        // $this->control();
     }
 
     /**

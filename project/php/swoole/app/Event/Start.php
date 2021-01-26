@@ -3,16 +3,17 @@
 namespace App\Event;
 
 use Anng\lib\App;
+use Anng\lib\Container;
 
 class Start
 {
-    public function __construct(App $app)
+    public function __construct(Container $container)
     {
-        $this->app = $app;
+        $container->db->derive()->insert();
     }
 
     public function run($ws)
     {
-        $this->app->crontab->setWs($ws);
+        // $this->app->crontab->setWs($ws);
     }
 }

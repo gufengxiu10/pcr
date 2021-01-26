@@ -7,9 +7,8 @@ use Hyperf\Crontab\Crontab;
 
 class Open
 {
-    public function __construct(App $app)
+    public function __construct()
     {
-        $this->app = $app;
     }
 
     public function run($ws, $request)

@@ -5,11 +5,15 @@ declare(strict_types=1);
 namespace Anng\lib;
 
 use Closure;
+use Exception;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
+use ReflectionFunctionAbstract;
 
 class Container implements ContainerInterface
 {
+
+    protected static $instance;
 
     /**
      * @name: 容器中的对象实例
@@ -22,6 +26,14 @@ class Container implements ContainerInterface
      * @var array
      */
     protected array $bind = [];
+
+    public function __construct()
+    {
+        //设置容器当前实例
+        $this->setInstance($this);
+        //把当当前实例添加到容器
+        $this->instance(static::class, $this);
+    }
 
     /**
      * @name: 绑定
@@ -103,7 +115,6 @@ class Container implements ContainerInterface
     public function make(string $abstract, array $vars = [])
     {
         $abstract = $this->getAlias($abstract);
-
         if (isset($this->instances[$abstract])) {
             return $this->instances[$abstract];
         }
@@ -113,18 +124,78 @@ class Container implements ContainerInterface
         return $object;
     }
 
+    /**
+     * @name: 实例化类
+     * @param {*} $class
+     * @param {*} $vars
+     * @author: ANNG
+     * @todo: 
+     * @Date: 2021-01-26 15:27:03
+     * @return {*}
+     */
     public function inovkeClass($class, $vars = [])
     {
         $reflect = new ReflectionClass($class);
 
         $constructor = $reflect->getConstructor();
-        $args = $constructor ? ($vars ?: [$this]) : [];
+        $args = $constructor ? $this->bindParams($constructor, $vars) : [];
         $object = $reflect->newInstanceArgs($args);
         return $object;
     }
 
+    /**
+     * @name: ww
+     * @param {*} Type
+     * @author: ANNG
+     * @todo: 
+     * @Date: 2021-01-26 15:29:18
+     * @return {*}
+     */
+    public function bindParams(ReflectionFunctionAbstract $reflect, array $vars = [])
+    {
+        if ($reflect->getNumberOfParameters() == 0) {
+            return [];
+        }
+
+        $args = [];
+        $type   = key($vars) === 0 ? 1 : 0;
+        //获得参数列表
+        $params = $reflect->getParameters();
+        foreach ($params as $param) {
+            //获得参数名
+            $name   = $param->getName();
+
+            //判断是否class
+            $class  = $param->getType();
+            if ($class) {
+                $args[] = $this->make($class->getName());
+            } elseif (0 == $type && array_key_exists($name, $vars)) {
+                $args[] = $vars[$name];
+            } else {
+                throw new Exception('method param miss:' . $name);
+            }
+        }
+        return $args;
+    }
+
+    public function setInstance($instance): static
+    {
+        static::$instance = $instance;
+        return $this;
+    }
+
+    public static function getInstance()
+    {
+        if (is_null(static::$instance)) {
+            static::$instance = new static;
+        }
+
+        return static::$instance;
+    }
+
     public function get($name)
     {
+
         return $this->make($name);
     }
 
@@ -135,6 +206,7 @@ class Container implements ContainerInterface
 
     public function __get($name)
     {
+
         return $this->get($name);
     }
 }

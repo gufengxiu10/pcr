@@ -8,13 +8,6 @@ use Dotenv\Dotenv;
 
 class Env
 {
-    protected $app;
-    
-    public function __construct(App $app)
-    {
-        $this->app = $app;
-    }
-
     /**
      * @name: env文件加载
      * @param {*}
@@ -25,7 +18,7 @@ class Env
      */
     public function loading()
     {
-        $dotenv = Dotenv::createMutable(realpath($this->app->getEnv()));
+        $dotenv = Dotenv::createMutable(realpath(Container::getInstance()->app->getEnv()));
         $dotenv->load();
     }
 

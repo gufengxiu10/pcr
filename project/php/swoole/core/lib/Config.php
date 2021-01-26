@@ -40,4 +40,9 @@ class Config
 
         return $this->config[$name];
     }
+
+    public function __get($name)
+    {
+        return $this->get($name);
+    }
 }
