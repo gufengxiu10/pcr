@@ -29,16 +29,15 @@ class Sql
      */
     public function insert()
     {
-        Coroutine::create(function () {
-            $pdo = $this->pool->get();
-            $statement = $pdo->prepare("SELECT * FROM pixiv_t");
-            if (!$statement) {
-                throw new Exception('Prepare failed');
-            }
+        $pdo = $this->pool->get();
+        $statement = $pdo->prepare("SELECT * FROM pixiv_t");
+        if (!$statement) {
+            throw new Exception('Prepare failed');
+        }
 
-            $result = $statement->execute();
-            dump($result);
-            $this->pool->put($pdo);
-        });
+        $result = $statement->execute();
+        $result = $statement->fetchAll();
+        $this->pool->put($pdo);
+        return $result;
     }
 }

@@ -4,6 +4,10 @@ namespace Anng\lib;
 
 use ReflectionClass;
 
+use function Co\run;
+use Co\Http\Server;
+use Swoole\Coroutine;
+
 class App
 {
     private $service;
@@ -39,12 +43,60 @@ class App
     public function start()
     {
         $this->init();
+        run(function () {
+            $this->server = new Server('0.0.0.0', 9502);
+            //启动任务调度器
+            $this->crontabStart();
+            $this->createMysqlPool();
+            $this->server->handle('/', function ($request, $ws) {
+                $ws->upgrade();
+                while (true) {
+                    $frame = $ws->recv();
+                    dump($frame);
+                    if ($frame === '') {
+                        $ws->close();
+                        break;
+                    } else if ($frame === false) {
+                        echo "error : " . swoole_last_error() . "\n";
+                        break;
+                    } else {
+                        if ($frame->data == 'close' || get_class($frame) === Swoole\WebSocket\CloseFrame::class) {
+                            $ws->close();
+                            return;
+                        }
 
-        $this->service = new \Swoole\WebSocket\Server('0.0.0.0', 9502);
-        $this->service->on('start', [$this->ico('Start'), 'run']);
-        $this->service->on('open', [$this->ico('Open'), 'run']);
-        $this->service->on('message', [$this->ico('Message'), 'run']);
-        $this->service->start();
+                        $this->ico('Message', [$ws, $frame]);
+                    }
+                }
+            });
+            $this->server->start();
+        });
+    }
+
+    /**
+     * @name: 启动任务调度器
+     * @author: ANNG
+     * @Date: 2021-01-27 15:39:46
+     * @return {*}
+     */
+    public function crontabStart(): void
+    {
+        $this->container
+            ->crontab
+            ->setTask($this->container->config->get('crontab'))->run();
+    }
+
+    /**
+     * @name: 创建Mysql连接池
+     * @param {*}
+     * @author: ANNG
+     * @todo: 
+     * @Date: 2021-01-27 15:41:03
+     * @return {*}
+     */
+    public function createMysqlPool()
+    {
+        $this->container->db->derive();
     }
 
 

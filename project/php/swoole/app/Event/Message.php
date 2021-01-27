@@ -13,12 +13,14 @@ class Message
     private $data = [];
     private $app;
 
-    public function __construct()
+    public function __construct($ws, $frame)
     {
+        $this->run($ws, $frame);
     }
 
     public function run($ws, $frame)
     {
+        $ws->push('测试');
         // $postData = [
         //     "action"        => "send_group_msg",
         //     "params" => [

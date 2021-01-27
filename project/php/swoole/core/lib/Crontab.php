@@ -15,17 +15,10 @@ class Crontab
     private int $second;
     protected App $app;
 
-    public function __construct(App $app)
+    public function setTask($task)
     {
-        $this->app = $app;
-        $this->getTask();
-        $this->run();
-    }
-
-    public function getTask()
-    {
-        $task = $this->app->config->get('crontab');
         $this->task = array_merge($this->task, $task);
+        return $this;
     }
 
     public function run(): void

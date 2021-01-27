@@ -1,11 +1,7 @@
 <?php
 
-use Anng\Plug\Oos\Aliyun\Objects;
-use Anng\Plug\Oos\Auth;
 use GuzzleHttp\Client;
-use OSS\Model\BucketInfo;
 use Predis\Client as PredisClient;
-use Swoole\Process;
 
 require_once "vendor/autoload.php";
 
@@ -27,9 +23,14 @@ Co\run(
         if (!$redis->exists('pxixv-' . $date)) {
             $d = [];
             for ($i = 1; $i < 4; $i++) {
-                $res = $cliden->request('get', 'https://pixiviz.pwp.app/api/v1/illust/rank?mode=day&date=' . $date . '&page=' . $i, [
+                $res = $cliden->request(
+                'get', 
+                'https://pixiviz.pwp.app/api/v1/illust/rank?mode=day&date=' . $date . '&page=' . $i, 
+                [
                     'heards' => [
-                        'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.96 Safari/537.36 Edg/88.0.705.50'
+                        'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) 
+                        AppleWebKit/537.36 (KHTML, like Gecko) 
+                        Chrome/88.0.4324.96 Safari/537.36 Edg/88.0.705.50'
                     ]
                 ]);
 
@@ -77,49 +78,21 @@ Co\run(
                         mkdir('./im/' . $date, 0777, true);
                     }
 
-                    go(function () use ($date, $fileName, $body, $key, &$ki, $k) {
-                        $al = './im/' . $date . '/' . $fileName;
-                        $wd = fopen($al, 'w');
+                    $al = './im/' . $date . '/' . $fileName;
+                    $wd = fopen($al, 'w');
 
-                        while (!$body->eof()) {
-                            $content = $body->read(1024 * 200);
-                            fwrite($wd, $content);
-                        }
+                    while (!$body->eof()) {
+                        $content = $body->read(1024 * 200);
+                        fwrite($wd, $content);
+                    }
 
-                        fclose($wd);
-                        dump('成功：' . $key . '-' . $k . '-' . $fileName);
-                        unset($ki[$key][$k]);
-                        dump($ki);
-                    });
+                    fclose($wd);
+                    dump('成功：' . $key . '-' . $k . '-' . $fileName);
+                    unset($ki[$key][$k]);
+                    dump($ki);
                 }
             });
         }
     }
 );
 echo 'use ' . (microtime(true) - $s) . ' s';
-
-
-// dd(json_decode($res->getBody()->getContents(), true));
-
-
-
-
-// $auth = new Auth('LTAI4GKqRce9trhJ1KGFBXT9', 'yYq0hxz2mjTP1qZtIWJCr15AptSupV');
-// $auth->setBucket('cic-pixiv');
-// $object = new Objects($auth);
-// $object->setFile('/images/pcr/20210109')->upload();
-
-// $cliden = new Client();
-// $res = $cliden->request('get', 'https://pixiviz.pwp.app/api/v1/illust/rank?mode=day&date=2021-01-22&page=1', [
-//     'heards' => [
-//         'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.96 Safari/537.36 Edg/88.0.705.50'
-//     ]
-// ]);
-
-
-// https://i.pximg.net/user-profile/img/2015/04/01/09/24/51/9172583_ef46e4bda34c271df88dd5f64c2fba5e_170.png
-// https://i.pximg.net/img-original/img/2020/12/26/00/00/03/86539244_p0.png"
-//https://i.pximg.net/img-original/img/2021/01/21/00/13/45/87188772_p0.png
-//https://pixiv-image-jp.pwp.link/img-original/img/2021/01/22/00/00/03/87208288_p0.png
-// $jar = new \GuzzleHttp\Cookie\CookieJar;
-// $cliden = new Client();

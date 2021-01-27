@@ -10,6 +10,11 @@ class Download
 {
     public function download()
     {
+        dump(1);
+    }
+
+    public function download2()
+    {
         $date = date('Y-m-d', strtotime("-1 day"));
         $cli = new \Swoole\Coroutine\Http\Client('172.200.1.5', 80);
         $cli->setMethod('get');

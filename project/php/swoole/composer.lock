@@ -1047,16 +1047,16 @@
         },
         {
             "name": "swoolex/swoolex",
-            "version": "v1.2.28",
+            "version": "v1.2.29",
             "source": {
                 "type": "git",
                 "url": "https://github.com/swoolex/swoolex.git",
-                "reference": "2508ad31acf41b0d69e26da9e12a6d3b5a5b98a7"
+                "reference": "cdad0326822d608a3800099f3993a10a08e93f5d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swoolex/swoolex/zipball/2508ad31acf41b0d69e26da9e12a6d3b5a5b98a7",
-                "reference": "2508ad31acf41b0d69e26da9e12a6d3b5a5b98a7",
+                "url": "https://api.github.com/repos/swoolex/swoolex/zipball/cdad0326822d608a3800099f3993a10a08e93f5d",
+                "reference": "cdad0326822d608a3800099f3993a10a08e93f5d",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -1084,9 +1084,9 @@
             ],
             "support": {
                 "issues": "https://github.com/swoolex/swoolex/issues",
-                "source": "https://github.com/swoolex/swoolex/tree/v1.2.28"
+                "source": "https://github.com/swoolex/swoolex/tree/v1.2.29"
             },
-            "time": "2021-01-25T08:26:12+00:00"
+            "time": "2021-01-26T09:31:59+00:00"
         },
         {
             "name": "symfony/finder",

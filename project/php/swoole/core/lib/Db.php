@@ -15,7 +15,7 @@ class Db
     protected string|null $db = null;
     protected string|int $prot = 3306;
     protected array $instances = [];
-    protected $pool;
+    public $pool;
 
     public function __construct(Container $container)
     {

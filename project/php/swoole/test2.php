@@ -13,9 +13,6 @@ require_once "vendor/autoload.php";
 
 date_default_timezone_set("Asia/Shanghai");
 
-
-
-
 Coroutine::set(['hook_flags' => SWOOLE_HOOK_ALL]);
 
 $start_time = microtime(true);
@@ -97,27 +94,6 @@ Coroutine\run(function () {
             }
         });
     }
-    dump($co);
-    batch($co);
-    // $results = batch([
-    //     'file_put_contents' => function () {
-    //         return file_put_contents(__DIR__ . '/greeter.txt', "Hello,Swoole.");
-    //     },
-    //     'gethostbyname' => function () {
-    //         return gethostbyname('localhost');
-    //     },
-    //     'file_get_contents' => function () {
-    //         return file_get_contents(__DIR__ . '/greeter.txt');
-    //     },
-    //     'sleep' => function () {
-    //         sleep(1);
-    //         return true; // 返回NULL 因为超过了设置的超时时间0.1秒，超时后会立即返回。但正在运行的协程会继续执行完毕，而不会中止。
-    //     },
-    //     'usleep' => function () {
-    //         usleep(1000);
-    //         return true;
-    //     },
-    // ], 0.1);
     $use = microtime(true) - $use;
     echo "Use {$use}s, Result:\n";
 });
