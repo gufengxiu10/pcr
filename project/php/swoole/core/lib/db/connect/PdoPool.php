@@ -22,13 +22,22 @@ class PdoPool
 
     private function createDb()
     {
+        // $this->pool = new SwoolePdoPool((new PDOConfig)
+        //         ->withHost($this->db->config->host)
+        //         ->withPort(60977)
+        //         ->withDbName('pixiv')
+        //         ->withCharset('utf8mb4')
+        //         ->withUsername('gufengxiu10')
+        //         ->withPassword('Freedomx102')
+        // );
+
         $this->pool = new SwoolePdoPool((new PDOConfig)
-                ->withHost('bj-cdb-ozdvjhny.sql.tencentcdb.com')
-                ->withPort(60977)
-                ->withDbName('pixiv')
-                ->withCharset('utf8mb4')
-                ->withUsername('gufengxiu10')
-                ->withPassword('Freedomx102')
+                ->withHost($this->db->config->host)
+                ->withPort($this->db->config->port)
+                ->withDbName($this->db->config->name)
+                ->withCharset($this->db->config->char)
+                ->withUsername($this->db->config->username)
+                ->withPassword($this->db->config->password)
         );
         return $this->pool;
     }

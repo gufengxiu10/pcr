@@ -48,6 +48,9 @@ class App
             //启动任务调度器
             $this->crontabStart();
             $this->createMysqlPool();
+            $this->container->db
+                ->name('t')
+                ->select();
             $this->server->handle('/', function ($request, $ws) {
                 $ws->upgrade();
                 while (true) {
@@ -96,16 +99,17 @@ class App
      */
     public function createMysqlPool()
     {
-        $this->container->db->derive();
+        $this->container->db
+            ->setConfig($this->container->config->get('datebase'))
+            ->create();
     }
 
 
     public function ico($method, ...$argc)
     {
         $className = "\App\Event\\" . $method;
-        $object = $this->container->make($className, ...$argc);
-        // $reflect = new ReflectionClass($className);
-        // $object = $reflect->getConstructor() ? $reflect->newInstanceArgs($argc) : $reflect->newInstanceArgs([]);
+        $reflect = new ReflectionClass($className);
+        $object = $reflect->getConstructor() ? $reflect->newInstanceArgs($argc) : $reflect->newInstanceArgs([]);
         return $object;
     }
 

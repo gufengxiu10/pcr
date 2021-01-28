@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 namespace Anng\lib;
 
+use Anng\lib\db\Config;
 use Anng\lib\db\connect\PdoPool;
 use Anng\lib\db\Sql;
 
@@ -16,50 +17,38 @@ class Db
     protected string|int $prot = 3306;
     protected array $instances = [];
     public $pool;
+    public $config;
 
-    public function __construct(Container $container)
+    public function create()
     {
-        $this->container = $container;
-    }
-
-    public function derive()
-    {
-        $this->pool = $this->container->make(PdoPool::class);
-        $this->sql = $this->container->make(Sql::class);
+        $this->pool = (new PdoPool($this));
+        $this->sql = (new Sql($this));
         return $this;
     }
 
-    public function setHost(string $val): static
+    /**
+     * @name: 设置数据库信息
+     * @param {*} string
+     * @param {*} string
+     * @author: ANNG
+     * @todo: 
+     * @Date: 2021-01-28 10:07:57
+     * @return {*}
+     */
+    public function setConfig(string|array $key, string|null $val = null): static
     {
-        $this->host = $val;
+        if (is_null($this->config)) {
+            $this->config = new Config();
+        }
+
+        if (!is_null($val)) {
+            $this->config->set($key, $val);
+        } elseif (is_array($key)) {
+            foreach ($key as $k => $v) {
+                $this->config->set($k, $v);
+            }
+        }
         return $this;
-    }
-
-    public function setDb(string $val): static
-    {
-        $this->db = $val;
-        return $this;
-    }
-
-    public function setProt(string $val): static
-    {
-        $this->prot = $val;
-        return $this;
-    }
-
-    public function getHost()
-    {
-        return $this->host;
-    }
-
-    public function getDb()
-    {
-        return $this->db;
-    }
-
-    public function getProt()
-    {
-        return $this->prot;
     }
 
     public function getPool()
@@ -69,12 +58,6 @@ class Db
 
     public function __call($method, $args)
     {
-        if (method_exists($this->pool, $method)) {
-            call_user_func_array([$this->pool, $method], $args);
-        } elseif (method_exists($this->sql, $method)) {
-            call_user_func_array([$this->sql, $method], $args);
-        }
-
-        dump(1);
+        return call_user_func_array([$this->sql, $method], $args);
     }
 }
