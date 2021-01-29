@@ -12,10 +12,6 @@ use Anng\lib\db\Sql;
 class Db
 {
     protected App $app;
-    protected string $host = '127.0.0.1';
-    protected string|null $db = null;
-    protected string|int $prot = 3306;
-    protected array $instances = [];
     public $pool;
     public $config;
 
@@ -49,6 +45,10 @@ class Db
             }
         }
         return $this;
+    }
+
+    public function work(callable $callback)
+    {
     }
 
     public function getPool()

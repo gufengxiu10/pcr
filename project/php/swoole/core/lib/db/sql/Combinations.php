@@ -32,13 +32,33 @@ trait Combinations
      * @Date: 2021-01-28 14:01:16
      * @return {*}
      */
-    final protected function tableCombination(string $sql): string
+    final protected function tableCombination(string $sql, $type = 'select'): string
     {
-        $sql . ' FROM' . $this->table;
+        switch ($type) {
+            case 'select':
+                $sql = $this->tableSelectBination($sql);
+                break;
+            case 'insert':
+                $sql = $this->tableInsertBination($sql);
+                break;
+            default:
+        }
         if ($this->alias) {
             $sql .= ' AS ' . $this->alias;
         }
 
+        return $sql;
+    }
+
+    final protected function tableSelectBination(string $sql): string
+    {
+        $sql . ' ' . $this->table;
+        return $sql;
+    }
+
+    final protected function tableInsertBination(string $sql): string
+    {
+        $sql . ' ' . $this->table;
         return $sql;
     }
 
@@ -68,11 +88,20 @@ trait Combinations
     final protected function whereCombination(string $sql): string
     {
         if ($this->where) {
+            $sqlArr = [];
             foreach ($this->where as $val) {
                 if (is_string($val)) {
-                    $sql .= ' ' . $val;
+                    $sqlArr[] = $val;
+                } elseif (is_array($val)) {
+                    if (isset($val[2])) {
+                        $sqlArr[] = $val[0] . ' ' . $val[1] . ' ' . $val[2];
+                    } else {
+                        $sqlArr[] = $val[0] . ' = ' . $val[2];
+                    }
                 }
             }
+
+            $sql .= ' WHERE ' . implode(' AND ', $sqlArr);
         }
         return $sql;
     }

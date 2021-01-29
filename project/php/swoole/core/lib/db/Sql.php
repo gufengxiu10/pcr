@@ -101,7 +101,70 @@ class Sql
     }
 
     /**
-     * @name: 生成sql
+     * @name: 添加
+     * @param {*}
+     * @author: ANNG
+     * @todo: 
+     * @Date: 2021-01-29 11:02:52
+     * @return {*}
+     */
+    public  function insert(array $data)
+    {
+        $pdo = $this->pool->get();
+        $sql = 'INSERT INTO';
+        $keys = array_keys($data);
+        $values = array_values($data);
+        if (!empty($keys)) {
+            $sql .= ' ' . $this->table . '(';
+            $sql .= implode(',', $keys);
+            $sql .= ')';
+        } else {
+            $sql .= ' ' . $this->table;
+        }
+        $sql .= ' VALUES ';
+        $sql .= '(';
+        $sql .= implode(',', $values);
+        $sql .= ')';
+
+        $statement = $pdo->query($sql);
+        $this->pool->put($pdo);
+        return $statement;
+    }
+
+    public function insertId($data)
+    {
+        $pdo = $this->pool->get();
+        $sql = 'INSERT INTO';
+        $keys = array_keys($data);
+        $values = array_values($data);
+        if (!empty($keys)) {
+            $sql .= ' ' . $this->table . '(';
+            $sql .= implode(',', $keys);
+            $sql .= ')';
+        } else {
+            $sql .= ' ' . $this->table;
+        }
+        $sql .= ' VALUES ';
+        $sql .= '(';
+        foreach ($values as $val) {
+            $sql .= '\'' . $val . '\',';
+        }
+        $sql = rtrim($sql, ',');
+        $sql .= ')';
+
+        $statement = $pdo->query($sql);
+        if ($statement->errorCode() != '00000') {
+            $this->error = $statement->errorInfo();
+            $this->pool->put($pdo);
+            return false;
+        }
+        $id = $pdo->lastInsertId();
+        $this->pool->put($pdo);
+        return $id;
+    }
+
+    /**
+     * @name: 查询sql
      * @param {*}
      * @author: ANNG
      * @todo: 

@@ -16,7 +16,7 @@ Co\run(function () {
         ]);
 
         $redis->auth('gufengxiu10');
-        $date = '2021-01-11';
+        $date = '2021-01-1';
         if (!$redis->exists('pxixv-' . $date)) {
             $d = [];
             for ($i = 1; $i < 4; $i++) {
@@ -31,6 +31,7 @@ Co\run(function () {
                 ]);
 
                 $data = json_decode($res->getBody()->getContents(), true);
+                $redis->set('pxixv-all-' . $date, json_encode($data));
                 $data = $data['illusts'];
                 foreach ($data as $val) {
                     if (!empty($val['meta_single_page'])) {
@@ -38,6 +39,7 @@ Co\run(function () {
                     }
                 }
             }
+
 
             $redis->setex('pxixv-' . $date, 3600, json_encode($d));
         }
