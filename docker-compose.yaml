@@ -46,6 +46,7 @@ services:
       - "9000"
     links:
       - pyton
+    dns: 144.114.114.114
     networks:
       pcr:
         ipv4_address: 172.200.1.2

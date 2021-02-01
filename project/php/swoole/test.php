@@ -5,6 +5,7 @@ require_once "vendor/autoload.php";
 
 date_default_timezone_set("Asia/Shanghai");
 
+use GuzzleHttp\Client;
 use Predis\Client as PredisClient;
 use Swlib\SaberGM;
 
@@ -16,17 +17,17 @@ Co\run(function () {
         ]);
 
         $redis->auth('gufengxiu10');
-        $date = '2021-01-1';
+        $date = '2021-01-23';
         if (!$redis->exists('pxixv-' . $date)) {
             $d = [];
             for ($i = 1; $i < 4; $i++) {
-                $res = SaberGM::get('https://pixiviz.pwp.app/api/v1/illust/rank?mode=day&date=' . $date . '&page=' . $i, [
+                $res = SaberGM::get('https://pixiviz.pwp.app/api/v1/illust/rank?mode=week_original&date=' . $date . '&page=' . $i, [
                     'heards' => [
                         'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) 
                         AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.96 
                         Safari/537.36 Edg/88.0.705.50'
                     ],
-                    'timeout' => 20,
+                    'timeout' => 100,
                     'retry_time' => 2
                 ]);
 
