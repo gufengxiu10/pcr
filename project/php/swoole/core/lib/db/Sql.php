@@ -4,31 +4,36 @@ declare(strict_types=1);
 
 namespace Anng\lib\db;
 
-use Anng\lib\Db;
-use Anng\lib\db\sql\Combinations;
-use Exception;
+use Anng\lib\db\biluder\Mysql;
+use Swoole\Database\PDOProxy;
 
 class Sql
 {
-    use Combinations;
-
-    protected Db $db;
+    protected PDOProxy $connection;
     protected $pool;
+    protected $biluder;
 
     //表名
-    protected string|null $table = null;
+    public string|null $table = null;
 
     //字段
-    protected string|array $field = '*';
+    public string|array $field = '*';
 
     //别名
-    protected string|null $alias = null;
+    public string|null $alias = null;
 
-    public function __construct(Db $db)
+    public array $data = [];
+
+    public function __construct(PDOProxy $connection, Config $config)
     {
-        $this->db = $db;
-        $this->config = $db->config;
-        $this->pool = $this->db->getPool();
+        $this->connection = $connection;
+        $this->config = $config;
+        $this->biluder = new Mysql($this);
+    }
+
+    public function getConnection()
+    {
+        return $this->connection;
     }
 
     /**
@@ -76,31 +81,6 @@ class Sql
     }
 
     /**
-     * @name: 查询数据
-     * @param {*}
-     * @author: ANNG
-     * @todo: 
-     * @Date: 2021-01-26 17:12:50
-     * @return {*}
-     */
-    public function select()
-    {
-        $pdo = $this->pool->get();
-
-        $sql = $this->selecSqlMake();
-        $statement = $pdo->query($sql);
-        if (!$statement) {
-            throw new Exception('Prepare failed');
-        }
-
-        $result = $statement->fetchAll();
-        dump($result);
-        $this->pool->put($pdo);
-
-        return $result;
-    }
-
-    /**
      * @name: 添加
      * @param {*}
      * @author: ANNG
@@ -110,78 +90,48 @@ class Sql
      */
     public  function insert(array $data)
     {
+        $this->data = $data;
+        $sql = $this->biluder->insert();
         $pdo = $this->pool->get();
-        $sql = 'INSERT INTO';
-        $keys = array_keys($data);
-        $values = array_values($data);
-        if (!empty($keys)) {
-            $sql .= ' ' . $this->table . '(';
-            $sql .= implode(',', $keys);
-            $sql .= ')';
-        } else {
-            $sql .= ' ' . $this->table;
+        $statement = $pdo->prepare($sql);
+        if (!$statement) {
+            throw new \Exception('Prepare failed');
         }
-        $sql .= ' VALUES ';
-        $sql .= '(';
-        $sql .= implode(',', $values);
-        $sql .= ')';
-
-        $statement = $pdo->query($sql);
+        $result = $statement->execute();
+        if (!$result) {
+            throw new \Exception('Execute failed');
+        }
         $this->pool->put($pdo);
-        return $statement;
+        return $result;
     }
 
     public function insertId($data)
     {
-        $pdo = $this->pool->get();
-        $sql = 'INSERT INTO';
-        $keys = array_keys($data);
-        $values = array_values($data);
-        if (!empty($keys)) {
-            $sql .= ' ' . $this->table . '(';
-            $sql .= implode(',', $keys);
-            $sql .= ')';
-        } else {
-            $sql .= ' ' . $this->table;
+        $this->data = $data;
+        $sql = $this->biluder->insert();
+        $statement = $this->connection->prepare($sql);
+        if (!$statement) {
+            throw new \Exception('Prepare failed');
         }
-        $sql .= ' VALUES ';
-        $sql .= '(';
-        foreach ($values as $val) {
-            $sql .= '\'' . $val . '\',';
+        $result = $statement->execute();
+        if (!$result) {
+            throw new \Exception('Execute failed');
         }
-        $sql = rtrim($sql, ',');
-        $sql .= ')';
 
-        $statement = $pdo->query($sql);
-        if ($statement->errorCode() != '00000') {
-            $this->error = $statement->errorInfo();
-            $this->pool->put($pdo);
-            return false;
-        }
-        $id = $pdo->lastInsertId();
-        $this->pool->put($pdo);
+        $id = $this->connection->lastInsertId();
         return $id;
     }
 
     /**
-     * @name: 查询sql
+     * @name: 
      * @param {*}
      * @author: ANNG
      * @todo: 
-     * @Date: 2021-01-28 11:01:18
+     * @Date: 2021-02-01 09:48:45
      * @return {*}
      */
-    private function selecSqlMake()
+    public function getBiluder()
     {
-        $sql = 'SELECT';
-        $sql = $this->fieldCombination($sql);
-        $sql = $this->tableCombination($sql);
-        $sql = $this->joinCombination($sql);
-
-        if ($this->alias) {
-            $sql .= ' AS ' . $this->alias;
-        }
-
-        return $sql;
+        # code...
     }
 }

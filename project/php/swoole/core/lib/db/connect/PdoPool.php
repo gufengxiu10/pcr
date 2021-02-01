@@ -22,29 +22,23 @@ class PdoPool
 
     private function createDb()
     {
-        // $this->pool = new SwoolePdoPool((new PDOConfig)
-        //         ->withHost($this->db->config->host)
-        //         ->withPort(60977)
-        //         ->withDbName('pixiv')
-        //         ->withCharset('utf8mb4')
-        //         ->withUsername('gufengxiu10')
-        //         ->withPassword('Freedomx102')
-        // );
-
+        dump($this->db->config);
         $this->pool = new SwoolePdoPool((new PDOConfig)
-                ->withHost($this->db->config->host)
-                ->withPort($this->db->config->port)
-                ->withDbName($this->db->config->name)
-                ->withCharset($this->db->config->char)
-                ->withUsername($this->db->config->username)
-                ->withPassword($this->db->config->password)
+                ->withHost($this->db->config->get('host'))
+                ->withPort($this->db->config->get('port'))
+                ->withDbName($this->db->config->get('name'))
+                ->withCharset($this->db->config->get('char'))
+                ->withUsername($this->db->config->get('username'))
+                ->withPassword($this->db->config->get('password'))
         );
-        return $this->pool;
+
+        return $this;
     }
 
     public function get()
     {
-        return $this->pool->get();
+        $conntion = $this->pool->get();
+        return $conntion;
     }
 
     public function put($pdo)

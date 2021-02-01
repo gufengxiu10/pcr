@@ -17,6 +17,7 @@ class Test
     public function run($frame)
     {
         go(function () use ($frame) {
+
             $redis = new Client([
                 'host' => '172.200.1.7',
                 'prot'  => 6379
@@ -43,91 +44,95 @@ class Test
                     'update_time'   => time(),
                 ];
 
-                $id = $frame->db->name('author')->insertId($user);
-                // $id = $this->container->db->name('pixiv_author')->insertId($user);
-
+                $pdo = $frame->db->getConnection();
+                $id = $pdo->name('author')->insertId($user);
                 $info = [
                     'oid' => $val['id'],
                     'aid' => $id,
                     'title' => $val['title'],
                     'type' => $val['type'],
-                    // 'caption' => json_encode($val['caption'], JSON_UNESCAPED_UNICODE),
+                    'caption' => $val['caption'],
                     'img_create_time' => strtotime($val['create_date']),
-                    // 'origin' => json_encode($val, JSON_UNESCAPED_UNICODE),
+                    'origin' => json_encode($val, JSON_UNESCAPED_UNICODE),
                     'create_time' => time(),
                     'update_time' => time()
                 ];
+                $id = $pdo->name('imgs_info')->insertId($info);
+                $frame->db->pushConnection($pdo);
+                dump($id);
 
-                $id = $frame->db->name('imgs_info')->insertId($info);
-                if (!empty($val['meta_single_page'])) {
-                    $imgs[] = [
-                        'iid' => $id,
-                        'url' => $val['meta_single_page']['original_image_url'],
-                        'specs' => 0,
-                        'path'  => $date . '/' . substr($val['meta_single_page']['original_image_url'], strrpos($val['meta_single_page']['original_image_url'], '/') + 1),
-                        'page' => 0,
-                        'create_time' => time(),
-                        'update_time' => time(),
-                    ];
 
-                    foreach ($val['image_urls'] as $k => $v) {
-                        $type = 0;
-                        switch ($k) {
-                            case 'square_medium':
-                                $type = 1;
-                                break;
-                            case 'medium':
-                                $type = 2;
-                                break;
-                            case 'large':
-                                $type = 3;
-                                break;
-                            default:
-                                $type = 0;
-                        };
-                        $imgs[] = [
-                            'iid' => $id,
-                            'url' => $val['meta_single_page']['original_image_url'],
-                            'specs' => $type,
-                            'path'  => $date . '/' . substr($v, strrpos($v, '/') + 1),
-                            'page' => 0,
-                            'create_time' => time(),
-                            'update_time' => time(),
-                        ];
-                    }
-                } else {
-                    foreach ($val['meta_pages'] as $k => $v) {
-                        foreach ($v['image_urls'] as $kitem => $item) {
-                            $type = 0;
-                            switch ($kitem) {
-                                case 'square_medium':
-                                    $type = 1;
-                                    break;
-                                case 'medium':
-                                    $type = 2;
-                                    break;
-                                case 'large':
-                                    $type = 3;
-                                    break;
-                                default:
-                                    $type = 0;
-                            };
-                            $imgs[] = [
-                                'iid' => $id,
-                                'url' => $item,
-                                'specs' => $type,
-                                'path'  => $date . '/' . substr($item, strrpos($item, '/') + 1),
-                                'page' => $k,
-                                'create_time' => time(),
-                                'update_time' => time(),
-                            ];
-                        }
-                    }
-                }
 
-                foreach ($imgs as $v) {
-                    $frame->db->name('imgs')->insertId($v);
-                }
+                // $id = $frame->db->name('imgs_info')->insertId($info);
+                //     if (!empty($val['meta_single_page'])) {
+                //         $imgs[] = [
+                //             'iid' => $id,
+                //             'url' => $val['meta_single_page']['original_image_url'],
+                //             'specs' => 0,
+                //             'path'  => $date . '/' . substr($val['meta_single_page']['original_image_url'], strrpos($val['meta_single_page']['original_image_url'], '/') + 1),
+                //             'page' => 0,
+                //             'create_time' => time(),
+                //             'update_time' => time(),
+                //         ];
+
+                //         foreach ($val['image_urls'] as $k => $v) {
+                //             $type = 0;
+                //             switch ($k) {
+                //                 case 'square_medium':
+                //                     $type = 1;
+                //                     break;
+                //                 case 'medium':
+                //                     $type = 2;
+                //                     break;
+                //                 case 'large':
+                //                     $type = 3;
+                //                     break;
+                //                 default:
+                //                     $type = 0;
+                //             };
+                //             $imgs[] = [
+                //                 'iid' => $id,
+                //                 'url' => $val['meta_single_page']['original_image_url'],
+                //                 'specs' => $type,
+                //                 'path'  => $date . '/' . substr($v, strrpos($v, '/') + 1),
+                //                 'page' => 0,
+                //                 'create_time' => time(),
+                //                 'update_time' => time(),
+                //             ];
+                //         }
+                //     } else {
+                //         foreach ($val['meta_pages'] as $k => $v) {
+                //             foreach ($v['image_urls'] as $kitem => $item) {
+                //                 $type = 0;
+                //                 switch ($kitem) {
+                //                     case 'square_medium':
+                //                         $type = 1;
+                //                         break;
+                //                     case 'medium':
+                //                         $type = 2;
+                //                         break;
+                //                     case 'large':
+                //                         $type = 3;
+                //                         break;
+                //                     default:
+                //                         $type = 0;
+                //                 };
+                //                 $imgs[] = [
+                //                     'iid' => $id,
+                //                     'url' => $item,
+                //                     'specs' => $type,
+                //                     'path'  => $date . '/' . substr($item, strrpos($item, '/') + 1),
+                //                     'page' => $k,
+                //                     'create_time' => time(),
+                //                     'update_time' => time(),
+                //                 ];
+                //             }
+                //         }
+                //     }
+
+                //     foreach ($imgs as $v) {
+                //         $frame->db->name('imgs')->insertId($v);
+                //     }
             }
         });
         // $postData = [

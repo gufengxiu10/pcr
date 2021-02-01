@@ -14,11 +14,11 @@ class Db
     protected App $app;
     public $pool;
     public $config;
+    protected $sql;
 
     public function create()
     {
         $this->pool = (new PdoPool($this));
-        $this->sql = (new Sql($this));
         return $this;
     }
 
@@ -33,7 +33,7 @@ class Db
      */
     public function setConfig(string|array $key, string|null $val = null): static
     {
-        if (is_null($this->config)) {
+        if (!$this->config) {
             $this->config = new Config();
         }
 
@@ -51,13 +51,16 @@ class Db
     {
     }
 
-    public function getPool()
+    public function getConnection(): Sql
     {
-        return $this->pool;
+        $connection = $this->pool->get();
+        return (new Sql($connection, $this->config));
     }
 
-    public function __call($method, $args)
+    public function pushConnection(Sql $sql): void
     {
-        return call_user_func_array([$this->sql, $method], $args);
+        $this->pool->put($sql->getConnection());
+        //消毁
+        unset($sql);
     }
 }

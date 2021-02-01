@@ -19,6 +19,7 @@
         "guzzlehttp/guzzle": "^7.0",
         "aliyuncs/oss-sdk-php": "^2.4",
         "swlib/saber": "^1.0",
-        "swoole/ide-helper": "^4.6"
+        "swoole/ide-helper": "^4.6",
+        "hyperf/pool": "^2.1"
     }
 }
