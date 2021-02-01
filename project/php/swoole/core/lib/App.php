@@ -50,11 +50,9 @@ class App
             $this->createMysqlPool();
             $this->ico('Test', [$this->container]);
             $this->server->handle('/', function ($request, $ws) {
-
                 $ws->upgrade();
                 while (true) {
                     $frame = $ws->recv();
-                    dump($frame);
                     if ($frame === '') {
                         $ws->close();
                         break;
@@ -67,6 +65,9 @@ class App
                             return;
                         }
 
+                        // $pdo = $this->container->db->getPool()->get();
+                        // dump($pdo);
+                        dump($ws->fd . ':' . $frame->data);
                         $this->ico('Message', [$ws, $frame]);
                     }
                 }

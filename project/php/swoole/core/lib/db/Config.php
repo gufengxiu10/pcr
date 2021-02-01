@@ -14,7 +14,7 @@ class Config
     public string|null $password = null;
     public string|null $name = null;
     public string $char = 'utf8mb4';
-    protected string|null $prefix = null;
+    public string|null $prefix = null;
 
     public function set($key, $val): static
     {

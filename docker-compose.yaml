@@ -57,6 +57,17 @@ services:
       - ./setting/php/entrypoint.sh:/usr/local/bin/entrypoint.sh
       - ./setting/php/supervisord/conf/:/etc/supervisor/conf.d/
       - ./setting/php/supervisord/log/:/tmp/supervisord/
+  hyperf:
+    container_name: pcr_hyperf
+    image: hyperf/hyperf:7.4-alpine-v3.11-swoole
+    privileged: true
+    restart: always
+    working_dir: /www
+    networks:
+      pcr:
+        ipv4_address: 172.200.1.8
+    volumes:
+      - ./project/php/:/www
   pyton:
     container_name: pcr_py
     build: ./setting/python
