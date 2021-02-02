@@ -22,7 +22,6 @@ class PdoPool
 
     private function createDb()
     {
-        dump($this->db->config);
         $this->pool = new SwoolePdoPool((new PDOConfig)
                 ->withHost($this->db->config->get('host'))
                 ->withPort($this->db->config->get('port'))
