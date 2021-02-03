@@ -19,7 +19,7 @@ $container->bind([
     'App'       => App::class,
     'Facade'    => Facade::class,
     'Config'    => Config::class,
-    'Reids'     => Redis::class,
+    'Redis'     => Redis::class,
     'Env'       => Env::class,
     'Db'        => Db::class,
     'Crontab'   => Crontab::class,

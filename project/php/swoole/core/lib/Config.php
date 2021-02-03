@@ -8,13 +8,7 @@ namespace Anng\lib;
 
 class Config
 {
-    protected $app;
     protected $config = [];
-
-    public function __construct(App $app)
-    {
-        $this->app = $app;
-    }
 
     public function load(string $file, string $name = '')
     {

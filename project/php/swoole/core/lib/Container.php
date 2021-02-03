@@ -26,7 +26,6 @@ class Container implements ContainerInterface
      * @var array
      */
     protected array $bind = [];
-
     public function __construct()
     {
         //设置容器当前实例
@@ -118,7 +117,7 @@ class Container implements ContainerInterface
         if (isset($this->instances[$abstract])) {
             return $this->instances[$abstract];
         }
-
+        
         $object = $this->inovkeClass($abstract, $vars);
         $this->instances[$abstract] = $object;
         return $object;
@@ -135,6 +134,7 @@ class Container implements ContainerInterface
      */
     public function inovkeClass($class, $vars = [])
     {
+        $reflect = new Reflection();
         $reflect = new ReflectionClass($class);
 
         $constructor = $reflect->getConstructor();
@@ -143,39 +143,38 @@ class Container implements ContainerInterface
         return $object;
     }
 
-    /**
-     * @name: ww
-     * @param {*} Type
-     * @author: ANNG
-     * @todo: 
-     * @Date: 2021-01-26 15:29:18
-     * @return {*}
-     */
-    public function bindParams(ReflectionFunctionAbstract $reflect, array $vars = [])
+    private function bindParams(ReflectionFunctionAbstract $refl, array $args = []): array
     {
-        if ($reflect->getNumberOfParameters() == 0) {
+        $params = $refl->getParameters();
+        if (empty($params)) {
             return [];
         }
 
-        $args = [];
-        $type   = key($vars) === 0 ? 1 : 0;
-        //获得参数列表
-        $params = $reflect->getParameters();
-        foreach ($params as $param) {
-            //获得参数名
-            $name   = $param->getName();
-
-            //判断是否class
-            $class  = $param->getType();
-            if ($class) {
-                $args[] = $this->make($class->getName());
-            } elseif (0 == $type && array_key_exists($name, $vars)) {
-                $args[] = $vars[$name];
+        $data = [];
+        //重置数组指针
+        reset($args);
+        //用于判断数组键值是以自然数为键,如果是则按顺序赋值
+        $type = key($args) === 0 ? 1 : 0;
+        foreach ($params as $value) {
+            $paramName = $value->getName();
+            if (!is_null($value->getType())) {
+                $name = $value->getType()->getName();
+                //TODO::未处理匿名数据的回调
+                $data[] = $this->instance($name, $args, false);
             } else {
-                throw new Exception('method param miss:' . $name);
+                if ($type == 1 && !empty($args)) {
+                    $data[] = array_shift($args);
+                } elseif ($type == 0 && isset($args[$paramName])) {
+                    $data[] = $args[$paramName];
+                } elseif ($value->isDefaultValueAvailable()) {
+                    $data[] = $value->getDefaultValue();
+                } else {
+                    throw new Exception('method param miss:' . $value->getName());
+                }
             }
         }
-        return $args;
+
+        return $data;
     }
 
     public function setInstance($instance): static
