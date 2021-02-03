@@ -12,14 +12,13 @@
         "symfony/var-dumper": "^5.2",
         "symfony/finder": "^5.2",
         "swoolex/swoolex": "^1.2",
-        "vlucas/phpdotenv": "^5.2",
+        "vlucas/phpdotenv": "^5.3",
         "predis/predis": "^1.1",
         "swlib/archer": "^1.1",
         "psr/container": "^1.0",
-        "guzzlehttp/guzzle": "^7.0",
         "aliyuncs/oss-sdk-php": "^2.4",
         "swlib/saber": "^1.0",
         "swoole/ide-helper": "^4.6",
-        "hyperf/pool": "^2.1"
+        "reasno/swoole-aliyunoss-addon": "^1.0"
     }
 }

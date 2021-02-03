@@ -4,10 +4,16 @@ declare(strict_types=1);
 
 namespace Anng\lib;
 
+use Anng\lib\facade\App;
 use Dotenv\Dotenv;
 
 class Env
 {
+    public function __construct()
+    {
+        $this->loading();
+    }
+
     /**
      * @name: env文件加载
      * @param {*}
@@ -18,7 +24,7 @@ class Env
      */
     public function loading()
     {
-        $dotenv = Dotenv::createMutable(realpath(Container::getInstance()->app->getEnv()));
+        $dotenv = Dotenv::createMutable(realpath(App::getEnv()));
         $dotenv->load();
     }
 

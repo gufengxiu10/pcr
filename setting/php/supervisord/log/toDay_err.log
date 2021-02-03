@@ -374,3 +374,11 @@ supervisor: couldn't chdir to /www/swoole/task: ENOENT
 supervisor: child process was not spawned
 supervisor: couldn't chdir to /www/swoole/task: ENOENT
 supervisor: child process was not spawned
+supervisor: couldn't chdir to /www/swoole/task: ENOENT
+supervisor: child process was not spawned
+supervisor: couldn't chdir to /www/swoole/task: ENOENT
+supervisor: child process was not spawned
+supervisor: couldn't chdir to /www/swoole/task: ENOENT
+supervisor: child process was not spawned
+supervisor: couldn't chdir to /www/swoole/task: ENOENT
+supervisor: child process was not spawned

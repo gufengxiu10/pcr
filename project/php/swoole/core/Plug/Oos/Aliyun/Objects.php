@@ -60,7 +60,7 @@ class Objects
                 } else {
                     $res = $this->auth->client()->uploadFile($this->auth->getBucket(), '1.png', $file);
                 }
-
+                dump($res);
                 array_push($this->resData, $res);
             } catch (OssException $e) {
                 array_push($errorFile, $file);

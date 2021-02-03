@@ -14,16 +14,16 @@ class App
     private $service;
 
     //容器对象
-    private Container $container;
+    private $container;
 
     //根目录
     protected $rootPath;
 
-    public function __construct(Container $container)
+    public function __construct()
     {
         date_default_timezone_set("Asia/Shanghai");
         $this->rootPath = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR;
-        $this->container = $container;
+        $this->container = Container::getInstance();
         // $this->init();
     }
 
@@ -136,6 +136,11 @@ class App
      * @return string
      */
     public function getEnv()
+    {
+        return $this->rootPath;
+    }
+
+    public function getRootPath()
     {
         return $this->rootPath;
     }

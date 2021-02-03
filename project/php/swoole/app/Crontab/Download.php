@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Crontab;
 
-use Anng\lib\App;
-use Anng\lib\Facade;
+use Anng\lib\facade\App;
 use Anng\lib\facade\Db;
+use Anng\lib\facade\Env;
 use Anng\lib\facade\Redis;
+use Anng\Plug\Oos\Aliyun\Objects;
+use Anng\Plug\Oos\Auth;
 use GuzzleHttp\Client;
 use Swlib\SaberGM;
 use Swoole\Coroutine\System;
@@ -108,9 +110,15 @@ class Download
         });
     }
 
-    public function download3()
+    public function imgUpload()
     {
-        dump(11);
+        dump('start');
+        go(function () {
+            $auth = new Auth(Env::get('AK'), Env::get('AS'));
+            $auth->setBucket('cic-pixiv');
+            $client = new Objects($auth);
+            $client->setFile(realpath(App::getRootPath() . 'im/2021-01-28'))->upload();
+        });
     }
 
     public function download2()
