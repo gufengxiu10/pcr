@@ -2,6 +2,7 @@
 
 namespace Anng\lib;
 
+use Anng\lib\facade\Container;
 use ReflectionClass;
 
 use function Co\run;
@@ -46,8 +47,14 @@ class App
         run(function () {
             $this->server = new Server('0.0.0.0', 9502);
             //启动任务调度器
-            $this->crontabStart();
-            $this->createMysqlPool();
+            go(function () {
+                $this->crontabStart();
+            });
+
+            go(function () {
+                $this->createMysqlPool();
+            });
+
             $this->ico('Test', [$this->container]);
             $this->server->handle('/', function ($request, $ws) {
                 $ws->upgrade();
@@ -64,9 +71,6 @@ class App
                             $ws->close();
                             return;
                         }
-
-                        // $pdo = $this->container->db->getPool()->get();
-                        // dump($pdo);
                         dump($ws->fd . ':' . $frame->data);
                         $this->ico('Message', [$ws, $frame]);
                     }
@@ -86,7 +90,8 @@ class App
     {
         $this->container
             ->crontab
-            ->setTask($this->container->config->get('crontab'))->run();
+            ->setTask($this->container->config->get('crontab'))
+            ->run();
     }
 
     /**

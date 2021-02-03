@@ -22,6 +22,9 @@ class Sql
     //别名
     public string|null $alias = null;
 
+    //条件
+    public array $where = [];
+
     public array $data = [];
 
     public function __construct(PDOProxy $connection, Config $config)
@@ -81,6 +84,21 @@ class Sql
     }
 
     /**
+     * @name: 条件
+     * @param {*}
+     * @author: ANNG
+     * @todo: 
+     * @Date: 2021-02-02 16:10:22
+     * @return {*}
+     */
+    public function where($field, $condition, $value = null)
+    {
+        $where = [$field, $condition, $value];
+        array_push($this->where, $where);
+        return $this;
+    }
+
+    /**
      * @name: 添加
      * @param {*}
      * @author: ANNG
@@ -105,6 +123,14 @@ class Sql
         return $result;
     }
 
+    /**
+     * @name: 添加并获得ID
+     * @param {*} $data
+     * @author: ANNG
+     * @todo: 
+     * @Date: 2021-02-02 10:22:18
+     * @return {*}
+     */
     public function insertId($data)
     {
         $this->data = $data;
@@ -119,7 +145,32 @@ class Sql
         }
 
         $id = $this->connection->lastInsertId();
+        $this->clear();
         return $id;
+    }
+
+    /**
+     * @name: 批量添加
+     * @param {*}
+     * @author: ANNG
+     * @todo: 
+     * @Date: 2021-02-02 11:01:00
+     * @return {*}
+     */
+    public function insertAll(array $data)
+    {
+        $this->data = $data;
+        $sql = $this->biluder->insertAll();
+        $statement = $this->connection->prepare($sql);
+        if (!$statement) {
+            throw new \Exception('Prepare failed');
+        }
+        $result = $statement->execute();
+        if (!$result) {
+            throw new \Exception('Execute failed');
+        }
+        $this->clear();
+        return $result;
     }
 
     /**
@@ -130,8 +181,29 @@ class Sql
      * @Date: 2021-02-01 09:48:45
      * @return {*}
      */
-    public function getBiluder()
+    public function find()
     {
-        # code...
+        $sql = $this->biluder->find();
+        $statement = $this->connection->prepare($sql);
+        if (!$statement) {
+            throw new \Exception('Prepare failed');
+        }
+        $result = $statement->execute();
+        if (!$result) {
+            throw new \Exception('Execute failed');
+        }
+
+        $data = $statement->fetch();
+        $this->clear();
+        return $data;
+    }
+
+    private function clear()
+    {
+        $this->where = [];
+        $this->table = null;
+        $this->field = '*';
+        $this->alias = null;
+        $this->data = [];
     }
 }

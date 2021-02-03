@@ -11,7 +11,8 @@ abstract class Biluder
     protected array $option = [];
 
     protected $installSql = "INSERT INTO %TABLE%(%FIELD%) VALUES (%DATA%) %COMMENT%";
-
+    protected $installAllSql = "INSERT INTO %TABLE%(%FIELD%) %DATA% %COMMENT%";
+    protected $selectFindSql = "SELECT %FIELD% FROM %TABLE% %WHERE% LIMIT 1";
 
     public function __construct($connection)
     {
@@ -36,6 +37,59 @@ abstract class Biluder
             ''
         ], $this->installSql);
 
+        return $sql;
+    }
+
+    public function insertAll()
+    {
+        $data = $this->parseData(false);
+        if (empty($data)) {
+            return false;
+        }
+
+        $field = [];
+
+        $field = !isset($data['field']) ? $data[0] : $data['field'];
+        $nd = !isset($data['data']) ? $data[1] : $data['data'];
+        $values = '';
+        foreach ($nd as $value) {
+            $values .= 'SELECT ';
+            foreach ($value as &$val) {
+                if (is_string($val)) {
+                    $val = "'" . $val . "'";
+                }
+            }
+
+            $values .= implode(',', $value);
+            $values .= ' UNION ALL ';
+        }
+
+        $values = rtrim($values, 'UNION ALL');
+
+        $sql = str_replace(["%TABLE%", "%FIELD%", "%DATA%", "%COMMENT%"], [
+            $this->parseTable(),
+            implode(',', $field),
+            $values,
+            ''
+        ], $this->installAllSql);
+        return $sql;
+    }
+
+    /**
+     * @name: 
+     * @param {*}
+     * @author: ANNG
+     * @todo: 
+     * @Date: 2021-02-02 16:07:58
+     * @return {*}
+     */
+    public function find()
+    {
+        $sql = str_replace(["%TABLE%", "%FIELD%", "%WHERE%"], [
+            $this->parseTable(),
+            $this->parseField(),
+            $this->parseWhere(),
+        ], $this->selectFindSql);
         return $sql;
     }
 
@@ -64,23 +118,75 @@ abstract class Biluder
      * @Date: 2021-02-01 10:22:25
      * @return array
      */
-    protected function parseData(): array
+    protected function parseData($handle = true): array
     {
         $data = $this->connection->data;
 
         $re = [];
-        foreach ($data as $key => $value) {
-            if (!is_scalar($value)) {
-                $val = json_encode($value);
-            } elseif (is_string($value)) {
-                $val = "'" . trim($value, '"') . "'";
-            } else {
-                $val = $value;
-            }
+        if ($handle === true) {
+            foreach ($data as $key => $value) {
+                if (!is_scalar($value)) {
+                    $val = json_encode($value);
+                } elseif (is_string($value)) {
+                    $val = "'" . trim($value, '"') . "'";
+                } else {
+                    $val = $value;
+                }
 
-            $re['`' . $key . '`'] = $val;
+                $re['`' . $key . '`'] = $val;
+            }
+        } else {
+            $re = $data;
         }
 
+
         return $re;
+    }
+
+    /**
+     * @name: where语句分析
+     * @param {*}
+     * @author: ANNG
+     * @todo: 
+     * @Date: 2021-02-02 16:09:46
+     * @return {*}
+     */
+    public function parseWhere()
+    {
+        $where = $this->connection->where;
+        if (empty($where)) {
+            return '';
+        }
+
+        $sql = "WHERE ";
+        $nw = [];
+        foreach ($where as $key => $value) {
+            if (isset($value[2])) {
+                if (in_array($value[1], ['<', '>', '<>', '='])) {
+                    $sql .= "(" . implode(' ', $value) . ") AND ";
+                } elseif (strtolower($value[1]) == 'like') {
+                    $v = is_string($value[1]) ? "'" .  $value[2] . "'" : $value[1];
+                    $sql .= "(`{$value[0]}` LIKE {$v}) AND ";
+                }
+            } elseif (!isset($value[2])) {
+                $v = is_string($value[1]) ? "'" .  $value[1] . "'" : $value[1];
+                $sql .= "(`{$value[0]}` = {$v}) AND ";
+            }
+        }
+
+        return rtrim($sql, 'AND ');
+    }
+
+    /**
+     * @name: where语句分析
+     * @param {*}
+     * @author: ANNG
+     * @todo: 
+     * @Date: 2021-02-02 16:09:46
+     * @return {*}
+     */
+    public function parseField()
+    {
+        return $this->connection->field;
     }
 }

@@ -12,5 +12,6 @@ trait ws
     public function setWs($ws)
     {
         $this->ws = $ws;
+        return $this;
     }
 }

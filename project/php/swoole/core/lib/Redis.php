@@ -4,19 +4,18 @@ declare(strict_types=1);
 
 namespace Anng\lib;
 
+use Anng\lib\facade\Config;
 use Predis\Client;
 
 class Redis
 {
 
-    protected App $app;
     protected Object $redis;
     protected array $config;
 
-    public function __construct(App $app)
+    public function __construct()
     {
-        $this->app = $app;
-        $this->config = $this->app->config->get('redis');
+        $this->config = Config::get('redis');
         $this->connect();
     }
 
@@ -30,23 +29,24 @@ class Redis
      */
     public function connect(): void
     {
-        $this->redis = $this->app->make(Client::class, [[
+        $this->redis = new Client([
             'host' => $this->config['host'],
             'port' => $this->config['port'],
-        ]]);
-
-        // $this->redis = new Client([
-        //     'host' => $this->config['host'],
-        //     'port' => $this->config['port'],
-        // ]);
+        ]);
 
         if (!empty($this->config['auth'])) {
             $this->redis->auth($this->config['auth']);
         }
     }
 
+    public function client()
+    {
+        return $this->redis;
+    }
+
     public function __call($method, $argc)
     {
+
         return $this->redis->$method(...$argc);
     }
 }

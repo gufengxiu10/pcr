@@ -34,6 +34,7 @@ class Crontab
     public function send($word): void
     {
         try {
+
             if (
                 $word['second'] != '*'
                 && $word['minute'] == '*'
@@ -52,13 +53,13 @@ class Crontab
             } elseif ($word['day'] != '*' && $word['month'] == '*' && $word['week'] == '*') {
                 $this->timeDayCheck($word);
             } else {
-                $word = $this->timeSetDefault($word);
                 $this->timeCheck($word, 'month');
                 $this->timeCheck($word, 'week');
                 $this->timeCheck($word, 'day');
                 $this->timeCheck($word, 'hour');
                 $this->timeCheck($word, 'minute');
                 $this->timeCheck($word, 'second');
+                $word = $this->timeSetDefault($word);
             }
         } catch (\Throwable $th) {
             return;
@@ -79,14 +80,9 @@ class Crontab
      */
     public function taskClass($word)
     {
-        $refl = new \ReflectionClass($word['task']);
-        $object = $refl->newInstance();
-        if (isset($word['method']) && $refl->hasMethod($word['method'])) {
-            $method = $word['method'];
-            $object->$method($this->ws);
-        } else {
-            $object->run($this->ws);
-        }
+        (new Reflection())->setDefaultMethod('run', ['ws' => $this->ws])
+            ->setMethod($word['method'], ['ws' => $this->ws])
+            ->instance($word['task']);
     }
 
     /**
