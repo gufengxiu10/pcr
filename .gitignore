@@ -5,3 +5,4 @@ cqhttp
 *.jpg
 *.png
 *.log
+project/php/swoole/.env

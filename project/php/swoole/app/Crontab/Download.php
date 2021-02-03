@@ -18,7 +18,6 @@ class Download
 
     public function download()
     {
-        dump('start');
         go(function () {
             $redis = Redis::client();
             $date = '2021-02-01';
@@ -161,7 +160,6 @@ class Download
             $wg->add(count($data));
             foreach ($data as $key => $val) {
                 # 子协程START
-                //todo::此处使用子程的话,导致数据重复添加,原因是并发查询时候,导致各种个连接查询时数据都不存在所以各种进行添加
                 go(function () use ($val, $date,  $wg, $key) {
                     $pdo = Db::getConnection();
                     $user = [];
