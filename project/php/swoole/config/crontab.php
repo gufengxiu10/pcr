@@ -13,8 +13,7 @@ return [
         'day'         => '*', // 天数
         'month'       => '*', // 月份
         'week'        => '*', // 星期
-        'task'        => Download::class, // 任务
-        'method'      => 'imgUpload',
+        'task'        => ToDayPrice::class, // 任务
         'bin_log'     => true, // 是否记录日志
     ],
     // [

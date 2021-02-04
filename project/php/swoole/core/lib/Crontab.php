@@ -81,7 +81,7 @@ class Crontab
     public function taskClass($word)
     {
         (new Reflection())->setDefaultMethod('run', ['ws' => $this->ws])
-            ->setMethod($word['method'], ['ws' => $this->ws])
+            ->setMethod($word['method'] ?? '', ['ws' => $this->ws])
             ->instance($word['task']);
     }
 

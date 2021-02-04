@@ -2,6 +2,7 @@
 
 namespace Anng\lib;
 
+use Anng\lib\facade\Connect;
 use Anng\lib\facade\Container;
 use ReflectionClass;
 
@@ -44,6 +45,9 @@ class App
     public function start()
     {
         $this->init();
+        \Swoole\Coroutine::set([
+            'hook_flags' => SWOOLE_HOOK_CURL
+        ]);
         run(function () {
             $this->server = new Server('0.0.0.0', 9502);
             //启动任务调度器
@@ -57,17 +61,23 @@ class App
 
             $this->ico('Test', [$this->container]);
             $this->server->handle('/', function ($request, $ws) {
+                Connect::set($ws->fd, [
+                    'ws'    => $ws
+                ]);
                 $ws->upgrade();
                 while (true) {
                     $frame = $ws->recv();
                     if ($frame === '') {
+                        Connect::pop($ws->fd);
                         $ws->close();
                         break;
                     } else if ($frame === false) {
+                        Connect::pop($ws->fd);
                         echo "error : " . swoole_last_error() . "\n";
                         break;
                     } else {
                         if ($frame->data == 'close' || get_class($frame) === Swoole\WebSocket\CloseFrame::class) {
+                            Connect::pop($ws->fd);
                             $ws->close();
                             return;
                         }

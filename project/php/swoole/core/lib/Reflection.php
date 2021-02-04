@@ -122,6 +122,10 @@ class Reflection
             $this->method = [];
         }
 
+        if (empty($method)) {
+            return $this;
+        }
+
         if (is_string($method)) {
             $this->method[] = [
                 'method' => $method,

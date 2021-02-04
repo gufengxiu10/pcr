@@ -1,9 +1,6 @@
 package main
 
-import "vendor/Http"
-
 func main() {
-	Http.Create()
 	// client := &http.Client{}
 	// // client.Get("https://pixiviz.pwp.app/rank")
 	// res, _ := client.Get("https://w.wallhaven.cc/full/72/wallhaven-7232p9.jpg")

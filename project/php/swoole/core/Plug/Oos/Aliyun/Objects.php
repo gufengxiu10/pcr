@@ -56,14 +56,15 @@ class Objects
         foreach ($this->files as $file) {
             try {
                 if (is_array($file)) {
-                    $res = $this->auth->client()->uploadFile($this->auth->getBucket(), $file['name'], $file['path']);
+                    $res = $this->auth->client()->putObject($this->auth->getBucket(), $file['name'], file_get_contents($file['path']));
                 } else {
                     $res = $this->auth->client()->uploadFile($this->auth->getBucket(), '1.png', $file);
                 }
-                dump($res);
+
                 array_push($this->resData, $res);
             } catch (OssException $e) {
-                array_push($errorFile, $file);
+                dump($e->getMessage());
+                array_push($this->errorFile, $file);
             }
         }
 
@@ -73,7 +74,7 @@ class Objects
 
     private function retransmission()
     {
-        if (!empty($errorFile)) {
+        if (!empty($this->errorFile)) {
             $i = 0;
             while ($i > 5) {
                 foreach ($this->errorFile as $file) {

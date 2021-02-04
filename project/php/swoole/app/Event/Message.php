@@ -20,7 +20,7 @@ class Message
 
     public function run($ws, $frame)
     {
-        $ws->push('测试');
+        // $ws->push('测试');
         // $postData = [
         //     "action"        => "send_group_msg",
         //     "params" => [

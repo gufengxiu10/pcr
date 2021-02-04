@@ -5,6 +5,7 @@ use Anng\lib\Container;
 use Anng\lib\Crontab;
 use Anng\lib\Env;
 use Anng\lib\Config;
+use Anng\lib\Connect;
 use Anng\lib\Facade;
 use Anng\lib\Redis;
 use Anng\lib\Db;
@@ -23,7 +24,8 @@ $container->bind([
     'Env'       => Env::class,
     'Db'        => Db::class,
     'Crontab'   => Crontab::class,
-    'Finder'    => Finder::class
+    'Finder'    => Finder::class,
+    'Connect'   => Connect::class
 ]);
 
 require_once 'Helper.php';

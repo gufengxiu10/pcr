@@ -4,85 +4,72 @@ declare(strict_types=1);
 
 namespace App\Crontab;
 
+use Anng\lib\facade\App;
+use Anng\lib\facade\Connect;
+use Anng\lib\facade\Redis;
 use GuzzleHttp\Client;
+use Swlib\SaberGM;
+use Swoole\Coroutine\System;
 
 class ToDayPrice
 {
-    public function run($ws)
+    public function run()
     {
+        if (!Redis::exists('lolicon')) {
+            $res = SaberGM::get('https://api.lolicon.app/setu/' . '?' . http_build_query([
+                'apikey' => '32906725601ba5cf18c942',
+                'r18' => 0,
+                'num' => 10
+            ]));
 
-        $fileName =  date('YmdHis') . '.png';
-        file_put_contents('/images/pcr/' .  $fileName, 'https://i.xinger.ink:4443/images.php');
-        $postData = [
-            "action"        => "send_group_msg",
-            "params" => [
-                "group_id"      => 93958924,
-                "message" => [
-                    "type" => "image",
-                    "data" => [
-                        "file" => "http://172.200.1.4:9000/pcr/" . $fileName,
-                    ]
-                ]
-            ],
-        ];
+            $data = json_decode($res->getBody()->getContents(), true);
+            Redis::set('lolicon', json_encode($data, JSON_UNESCAPED_UNICODE));
+        }
 
-        dump($postData);
-        $ws->push(1, json_encode($postData, JSON_UNESCAPED_UNICODE));
-        return;
-        while (1) {
-            $token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJBTk5HIiwidXVpZCI6Ijk0YzI4MWRmMzA0YTRlNjg4ZmQ5NmYyZmFjNjlkNDJjIiwiaWF0IjoxNjEwNzI4MjAwLCJhY2NvdW50Ijoie1wiZW1haWxcIjpcImFubmdoYW55dXVAZ21haWwuY29tXCIsXCJnZW5kZXJcIjotMSxcImhhc1Byb25cIjowLFwiaWRcIjo1NzYsXCJwYXNzV29yZFwiOlwiY2UyODhmZGMwYmQzYzA1OWQ0NDRkYzEyMTc1MjU0NGZcIixcInN0YXR1c1wiOjAsXCJ1c2VyTmFtZVwiOlwiQU5OR1wifSIsImp0aSI6IjU3NiJ9.qWzEM3miARRccRfurOKcJPpcz4OvxpCpmJyrPNFfgv8";
-            $client = new Client();
-            $body = $client->request('GET', 'https://api.loli.st/pixiv/random.php', [
-                'query' => [
-                    'r18' => false,
-                    'type' => 'json',
-                ]
-            ])->getBody();
+        $data = Redis::get('lolicon');
+        $data = json_decode($data, true);
+        $fds = Connect::get();
+        foreach ($fds as $key => $value) {
+            foreach ($data['data'] as $val) {
+                $res = SaberGM::get($val['url'], [
+                    'timeout' => 20,
+                    'retry_time' => 3
+                ]);
 
-            $url = json_decode($body->getContents(), true);
-            $body = $client->request('GET', "https://api.acgmx.com/illusts/detail", [
-                'query' => [
-                    'illustId' => $url['illust_id'],
-                    'reduction' => true
-                ]
-            ])->getBody();
+                if ($res->getStatusCode() != 200) {
+                    dump($res->getStatusCode());
+                    continue;
+                }
 
+                $fileName = '/images/t/' . substr($val['url'], strrpos($val['url'], '/') + 1);
+                $wd = fopen($fileName, 'w');
 
-            $data = json_decode($body->getContents(), true);
-            $data = $data['data']['illust'];
-            if (!empty($data['meta_single_page'])) {
-                $ext = substr($data['meta_single_page']['original_image_url'], strrpos($data['meta_single_page']['original_image_url'], '.') + 1);
-                $body = $client->request('GET', "https://api.acgmx.com/illusts/urlLook", [
-                    'headers' => [
-                        'token' => $token,
-                    ],
-                    'query' => [
-                        'url' => $data['meta_single_page']['original_image_url'],
-                        'cache' => true
-                    ]
-                ])->getBody();
+                $body = $res->getBody();
+                if (!$body->eof()) {
+                    $content = $body->read(1024 * 200);
+                    fwrite($wd, $content);
+                }
 
-                $fileName =  date('YmdHis') . '.' . $ext;
-                file_put_contents('/images/pcr/' .  $fileName, $body->getContents());
+                fclose($wd);
 
                 $postData = [
-                    "action"        => "send_group_msg",
+                    "action" => "send_group_msg",
                     "params" => [
-                        "group_id"      => 93958924,
+                        "group_id" => 415446505,
                         "message" => [
                             "type" => "image",
                             "data" => [
-                                "file" => "https://i.xinger.ink:4443/images.php",
-                                "cache" => 0
+                                "file" => 'file://' . $fileName,
                             ]
                         ]
                     ],
                 ];
-
                 dump($postData);
-                $ws->push(1, json_encode($postData, JSON_UNESCAPED_UNICODE));
+                $value['ws']->push(json_encode($postData, JSON_UNESCAPED_UNICODE));
                 break;
             }
         }
+
+        // $this->ws->push(1, json_encode($postData, JSON_UNESCAPED_UNICODE));
     }
 }
