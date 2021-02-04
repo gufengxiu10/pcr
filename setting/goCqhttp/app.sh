@@ -1,7 +1,6 @@
 #!/bin/bash
 
 set -e
-
-nohup "/go/cqhttp/go-cqhttp"
-
+cd /go/cqhttp
+nohup ./go-cqhttp > /go/cq.log 2>&1 &
 exec "$@"

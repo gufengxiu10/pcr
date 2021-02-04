@@ -12,4 +12,6 @@ RUN cd /etc/apt \
     && echo "deb-src https://mirrors.ustc.edu.cn/debian-security/ buster/updates main contrib non-free" >> sources.list \
     && apt-get update 
 
-EXPOSE 8088
+ENTRYPOINT ["/app.sh"]
+
+CMD ["bash"]
