@@ -4,7 +4,7 @@
 set -e
 
 echo "" > /etc/resolv.conf
-echo "nameserver 114.114.114" >> /etc/resolv.conf
+echo "nameserver 114.114.114.114" >> /etc/resolv.conf
 echo "nameserver 8.8.8.8" >> /etc/resolv.conf
 
 if [[ ! -z "$@" ]]; then

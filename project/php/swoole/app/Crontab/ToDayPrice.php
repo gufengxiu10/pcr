@@ -15,8 +15,8 @@ class ToDayPrice
 {
     public function run()
     {
-        // $group = [415446505];
-        $group = [93958924, 415446505];
+        $group = [415446505];
+        // $group = [93958924, 415446505];
         if (!Redis::exists('lolicon')) {
             $res = SaberGM::get('https://api.lolicon.app/setu/' . '?' . http_build_query([
                 'apikey' => '32906725601ba5cf18c942',
