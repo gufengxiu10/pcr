@@ -20,25 +20,6 @@ class Message
 
     public function run($ws, $frame)
     {
-        // $ws->push('测试');
-        // $postData = [
-        //     "action"        => "send_group_msg",
-        //     "params" => [
-        //         "group_id"      => 415446505,
-        //         "message" => [
-        //             "type" => "image",
-        //             "data" => [
-        //                 "file" => "http://172.200.1.4:9000/pcr/default.png",
-        //             ]
-        //         ]
-        //     ],
-        // ];
-        // $ws->push($frame->fd, json_encode($postData, JSON_UNESCAPED_UNICODE));
-        // $this->checkCq();
-        // $this->ws = $ws;
-        // $this->frame = $frame;
-        // $this->data = json_decode($frame->data, true);
-        // $this->control();
     }
 
     /**

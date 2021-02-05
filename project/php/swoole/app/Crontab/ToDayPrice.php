@@ -4,19 +4,15 @@ declare(strict_types=1);
 
 namespace App\Crontab;
 
-use Anng\lib\facade\App;
 use Anng\lib\facade\Connect;
 use Anng\lib\facade\Redis;
-use GuzzleHttp\Client;
 use Swlib\SaberGM;
-use Swoole\Coroutine\System;
 
 class ToDayPrice
 {
     public function run()
     {
         $group = [415446505];
-        // $group = [93958924, 415446505];
         if (!Redis::exists('lolicon')) {
             $res = SaberGM::get('https://api.lolicon.app/setu/' . '?' . http_build_query([
                 'apikey' => '32906725601ba5cf18c942',
