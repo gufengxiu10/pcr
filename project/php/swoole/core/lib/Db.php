@@ -11,15 +11,25 @@ use Anng\lib\db\Sql;
 
 class Db
 {
-    protected App $app;
     public $pool;
     public $config;
     protected $sql;
 
     public function create()
     {
-        $this->pool = (new PdoPool($this));
+        if (!$this->pool) {
+            $this->pool = (new PdoPool($this));
+        }
         return $this;
+    }
+
+    public function getPool()
+    {
+        if (!$this->pool) {
+            $this->pool = (new PdoPool($this));
+        }
+
+        return $this->pool;
     }
 
     /**
@@ -47,19 +57,15 @@ class Db
         return $this;
     }
 
-    public function work(callable $callback)
-    {
-    }
-
     public function getConnection(): Sql
     {
-        $connection = $this->pool->get();
+        $connection = $this->getPool()->get();
         return (new Sql($connection, $this->config));
     }
 
     public function pushConnection(Sql $sql): void
     {
-        $this->pool->put($sql->getConnection());
+        $this->getPool()->put($sql->getConnection());
         //消毁
         unset($sql);
     }
