@@ -2,7 +2,7 @@
     "autoload": {
         "psr-4": {
             "Anng\\": "core/",
-            "App\\": "app/"
+            "app\\": "app/"
         },
         "files": [
             "core/Helper.php"
