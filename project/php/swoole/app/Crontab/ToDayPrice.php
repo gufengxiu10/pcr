@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Crontab;
+namespace app\crontab;
 
 use Anng\lib\facade\Connect;
 use Anng\lib\facade\Redis;
@@ -12,7 +12,7 @@ class ToDayPrice
 {
     public function run()
     {
-        $group = [415446505];
+        $group = [415446505, 93958924];
         if (!Redis::exists('lolicon')) {
             $res = SaberGM::get('https://api.lolicon.app/setu/' . '?' . http_build_query([
                 'apikey' => '32906725601ba5cf18c942',

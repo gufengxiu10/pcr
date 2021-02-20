@@ -122,7 +122,7 @@ class App
 
     public function ico($method, ...$argc)
     {
-        $className = "\App\Event\\" . $method;
+        $className = "\\app\\event\\" . $method;
         $reflect = new ReflectionClass($className);
         $object = $reflect->getConstructor() ? $reflect->newInstanceArgs(...$argc) : $reflect->newInstanceArgs([]);
         return $object;

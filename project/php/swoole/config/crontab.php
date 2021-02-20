@@ -1,7 +1,7 @@
 <?php
 
 use App\Crontab\Download;
-use App\Crontab\ToDayPrice;
+use app\crontab\ToDayPrice;
 
 return [
     [

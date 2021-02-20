@@ -15,7 +15,7 @@ use Swoole\Process\Manager;
 use function Co\run;
 
 date_default_timezone_set("Asia/Shanghai");
-
-$client = new \app\api\music\Base();
-
-dump($client->test());
+run(function () {
+    $client = new \app\api\music\Base();
+    dump($client->test());
+});

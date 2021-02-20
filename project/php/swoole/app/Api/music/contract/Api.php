@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Api\music\contract;
+namespace app\api\music\contract;
 
 interface Api
 {
@@ -14,5 +14,5 @@ interface Api
      * @Date: 2021-02-19 09:56:55
      * @return {*}
      */
-    public function search();
+    public function search(string $searchWord);
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Event;
+namespace app\event;
 
 use Anng\lib\App;
 use ReflectionClass;
@@ -20,6 +20,26 @@ class Message
 
     public function run($ws, $frame)
     {
+        $data = json_decode($frame->data, true);
+        if (isset($data['message_type']) && $data['message_type'] == 'group') {
+            if (strpos($data['message'], '点歌') !== false) {
+                $client = new \app\api\music\Base();
+                $info = $client->test(trim($data['message'], '点歌 '));
+                $ws->push(json_encode([
+                    "action"        => "send_group_msg",
+                    "params" => [
+                        "group_id" => $data['group_id'],
+                        "message" => [
+                            "type" => "music",
+                            "data" => [
+                                "type" => "163",
+                                "id" => $info['id']
+                            ]
+                        ]
+                    ],
+                ], JSON_UNESCAPED_UNICODE));
+            }
+        }
     }
 
     /**

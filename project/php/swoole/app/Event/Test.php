@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Event;
+namespace app\event;
 
 use Anng\lib\App;
 use Predis\Client;
@@ -16,6 +16,5 @@ class Test
 
     public function run($frame)
     {
-        
     }
 }
