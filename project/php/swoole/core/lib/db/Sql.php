@@ -27,6 +27,8 @@ class Sql
 
     public array $data = [];
 
+    private bool $isSql = false;
+
     public function __construct(PDOProxy $connection, Config $config)
     {
         $this->connection = $connection;
@@ -110,8 +112,11 @@ class Sql
     {
         $this->data = $data;
         $sql = $this->biluder->insert();
-        $pdo = $this->pool->get();
-        $statement = $pdo->prepare($sql);
+        if ($this->isSql === true) {
+            return $sql;
+        }
+
+        $statement = $this->connection->prepare($sql);
         if (!$statement) {
             throw new \Exception('Prepare failed');
         }
@@ -119,7 +124,6 @@ class Sql
         if (!$result) {
             throw new \Exception('Execute failed');
         }
-        $this->pool->put($pdo);
         return $result;
     }
 
@@ -161,6 +165,9 @@ class Sql
     {
         $this->data = $data;
         $sql = $this->biluder->insertAll();
+        if ($this->isSql === true) {
+            return $sql;
+        }
         $statement = $this->connection->prepare($sql);
         if (!$statement) {
             throw new \Exception('Prepare failed');
@@ -196,6 +203,13 @@ class Sql
         $data = $statement->fetch();
         $this->clear();
         return $data;
+    }
+
+
+    public function getSql(bool $bool = false): static
+    {
+        $this->isSql = $bool;
+        return $this;
     }
 
     private function clear()

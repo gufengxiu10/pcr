@@ -4,14 +4,18 @@ declare(strict_types=1);
 
 namespace Anng\lib\db;
 
+use Anng\lib\db\biluder\sql\Insert;
+
 abstract class Biluder
 {
+
+    use Insert;
 
     protected $connection;
     protected array $option = [];
 
-    protected $installSql = "INSERT INTO %TABLE%(%FIELD%) VALUES (%DATA%) %COMMENT%";
-    protected $installAllSql = "INSERT INTO %TABLE%(%FIELD%) %DATA% %COMMENT%";
+
+
     protected $selectFindSql = "SELECT %FIELD% FROM %TABLE% %WHERE% LIMIT 1";
 
     public function __construct($connection)
@@ -20,60 +24,7 @@ abstract class Biluder
     }
 
 
-    public function insert()
-    {
-        $data = $this->parseData();
-        if (empty($data)) {
-            return false;
-        }
 
-        $field = array_keys($data);
-        $values = array_values($data);
-
-        $sql = str_replace(["%TABLE%", "%FIELD%", "%DATA%", "%COMMENT%"], [
-            $this->parseTable(),
-            implode(',', $field),
-            implode(',', $values),
-            ''
-        ], $this->installSql);
-
-        return $sql;
-    }
-
-    public function insertAll()
-    {
-        $data = $this->parseData(false);
-        if (empty($data)) {
-            return false;
-        }
-
-        $field = [];
-
-        $field = !isset($data['field']) ? $data[0] : $data['field'];
-        $nd = !isset($data['data']) ? $data[1] : $data['data'];
-        $values = '';
-        foreach ($nd as $value) {
-            $values .= 'SELECT ';
-            foreach ($value as &$val) {
-                if (is_string($val)) {
-                    $val = "'" . $val . "'";
-                }
-            }
-
-            $values .= implode(',', $value);
-            $values .= ' UNION ALL ';
-        }
-
-        $values = rtrim($values, 'UNION ALL');
-
-        $sql = str_replace(["%TABLE%", "%FIELD%", "%DATA%", "%COMMENT%"], [
-            $this->parseTable(),
-            implode(',', $field),
-            $values,
-            ''
-        ], $this->installAllSql);
-        return $sql;
-    }
 
     /**
      * @name: 
@@ -118,9 +69,9 @@ abstract class Biluder
      * @Date: 2021-02-01 10:22:25
      * @return array
      */
-    protected function parseData($handle = true): array
+    protected function parseData($data = [], $handle = true): array
     {
-        $data = $this->connection->data;
+        $data = $data ?: $this->connection->data;
 
         $re = [];
         if ($handle === true) {
@@ -128,7 +79,7 @@ abstract class Biluder
                 if (!is_scalar($value)) {
                     $val = json_encode($value);
                 } elseif (is_string($value)) {
-                    $val = "'" . trim($value, '"') . "'";
+                    $val = "'" . trim(addslashes($value), '"') . "'";
                 } else {
                     $val = $value;
                 }

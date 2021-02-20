@@ -2,7 +2,7 @@
     "autoload": {
         "psr-4": {
             "Anng\\": "core/",
-            "App\\": "app/"
+            "app\\": "app/"
         },
         "files": [
             "core/Helper.php"
@@ -19,6 +19,7 @@
         "aliyuncs/oss-sdk-php": "^2.4",
         "swlib/saber": "^1.0",
         "swoole/ide-helper": "^4.6",
-        "reasno/swoole-aliyunoss-addon": "^1.0"
+        "reasno/swoole-aliyunoss-addon": "^1.0",
+        "metowolf/meting": "^1.5"
     }
 }

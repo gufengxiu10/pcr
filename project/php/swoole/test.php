@@ -1,21 +1,21 @@
 <?php
 
 declare(strict_types=1);
+
 require_once "vendor/autoload.php";
+require_once './core/Base.php';
+
+use Anng\lib\facade\App;
+use Anng\lib\facade\Config;
+use Anng\lib\facade\Container;
+use Anng\lib\facade\Db;
+use Metowolf\Meting;
+use Swoole\Process\Manager;
+
+use function Co\run;
 
 date_default_timezone_set("Asia/Shanghai");
 
-use Anng\Plug\Oos\Aliyun\Objects;
-use Anng\Plug\Oos\Auth;
-use App\Crontab\Download;
-use Predis\Client as PredisClient;
-use Swlib\SaberGM;
+$client = new \app\api\music\Base();
 
-\Swoole\Coroutine::set([
-    'hook_flags' => SWOOLE_HOOK_CURL
-]);
-
-Co\run(function () {
-    $d = new Download();
-    $d->run();
-});
+dump($client->test());
