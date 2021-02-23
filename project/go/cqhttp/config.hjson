@@ -5,9 +5,9 @@
 
 {
     // QQ号
-    uin: 1422306618
+    uin: 2369391190
     // QQ密码
-    password: "gufengxiu10"
+    password: "Freedomx102"
     // 是否启用密码加密
     encrypt_password: false
     // 加密后的密码, 如未启用密码加密将为空, 请勿随意修改.
