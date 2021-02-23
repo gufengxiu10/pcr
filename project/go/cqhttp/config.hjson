@@ -5,9 +5,9 @@
 
 {
     // QQ号
-    uin: 1422306618
+    uin: 2369391190
     // QQ密码
-    password: "gufengxiu10"
+    password: "Freedomx102"
     // 是否启用密码加密
     encrypt_password: false
     // 加密后的密码, 如未启用密码加密将为空, 请勿随意修改.
@@ -54,7 +54,7 @@
     // HTTP设置
     http_config: {
         // 是否启用正向HTTP服务器
-        enabled: true
+        enabled: false
         // 服务端监听地址
         host: 0.0.0.0
         // 服务端监听端口
@@ -89,9 +89,9 @@
             // 留空请使用 ""
             reverse_url: ws://172.200.1.2:9502
             // 反向WS API 地址
-            reverse_api_url: ws://you_websocket_api.server
+            reverse_api_url: ""
             // 反向WS Event 地址
-            reverse_event_url: ws://you_websocket_event.server
+            reverse_event_url: ""
             // 重连间隔 单位毫秒
             reverse_reconnect_interval: 3000
         }
