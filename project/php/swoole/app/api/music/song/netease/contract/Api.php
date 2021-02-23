@@ -14,5 +14,5 @@ interface Api
      * @Date: 2021-02-19 09:56:55
      * @return {*}
      */
-    public function search(string $searchWord);
+    public function module(string $searchWord);
 }

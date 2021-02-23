@@ -23,8 +23,8 @@ class Message
         $data = json_decode($frame->data, true);
         if (isset($data['message_type']) && $data['message_type'] == 'group') {
             if (strpos($data['message'], '点歌') !== false) {
-                $client = new \app\api\music\Base();
-                $info = $client->test(trim($data['message'], '点歌 '));
+                // $client = new \app\api\music\Base();
+                // $info = $client->test(trim($data['message'], '点歌 '));
                 $ws->push(json_encode([
                     "action"        => "send_group_msg",
                     "params" => [
@@ -32,8 +32,12 @@ class Message
                         "message" => [
                             "type" => "music",
                             "data" => [
-                                "type" => "163",
-                                "id" => $info['id']
+                                // "type" => "163",
+                                // "id" => 1381552460
+                                "type" => "custom",
+                                "url" => "http://m7.music.126.net/20210223150526/9dda17bcf764b1c0103a40ccc0ff350b/ymusic/NeFE5YHDzhiHZmKBqPXYrQ==/509951163021326872",
+                                "audio" => "http://m7.music.126.net/20210223150526/9dda17bcf764b1c0103a40ccc0ff350b/ymusic/NeFE5YHDzhiHZmKBqPXYrQ==/509951163021326872",
+                                "title" => "音乐标题"
                             ]
                         ]
                     ],

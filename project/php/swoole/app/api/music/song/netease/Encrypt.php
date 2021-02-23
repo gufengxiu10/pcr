@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace app\api\music\encrypt;
+namespace app\api\music\song\netease;
 
-class Netease
+class Encrypt
 {
     public function aescbc($body)
     {
