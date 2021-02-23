@@ -6,6 +6,7 @@ namespace app\api\music;
 
 use ReflectionClass;
 use ReflectionException;
+use Throwable;
 
 abstract class Music
 {
@@ -19,6 +20,10 @@ abstract class Music
             return $this;
         } catch (ReflectionException $e) {
             dump($e->getMessage());
+        } catch (MusicExcption $e) {
+            dump($e->getMessage());
+        } catch (Throwable $e) {
+            dump($e->getMessage());
         }
     }
 
@@ -26,11 +31,19 @@ abstract class Music
 
     public function __call($method, $args)
     {
-        if ($this->refection->hasMethod($method)) {
-            $instance = $this->refection->newInstance();
-            return $instance->$method(...$args);
-        } else {
-            return '方法不存在';
+        try {
+            if ($this->refection->hasMethod($method)) {
+                $instance = $this->refection->newInstance();
+                return $instance->$method(...$args);
+            } else {
+                return '方法不存在';
+            }
+        } catch (ReflectionException $e) {
+            dump($e->getMessage());
+        } catch (MusicExcption $e) {
+            if ($this->getMessage() == '请求失败') {
+                call_user_func_array([$this, $method], $args);
+            }
         }
     }
 }

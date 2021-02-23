@@ -3,6 +3,7 @@
 namespace app\event;
 
 use Anng\lib\App;
+use app\api\music\song\netease\Netease;
 use ReflectionClass;
 use Symfony\Component\Finder\Finder;
 
@@ -23,22 +24,34 @@ class Message
         $data = json_decode($frame->data, true);
         if (isset($data['message_type']) && $data['message_type'] == 'group') {
             if (strpos($data['message'], '点歌') !== false) {
-                // $client = new \app\api\music\Base();
-                // $info = $client->test(trim($data['message'], '点歌 '));
+                $netease = new Netease;
+                dump(str_replace('点歌 ', '', $data['message']));
+                $info = $netease->module('song')->search(str_replace('点歌 ', '', $data['message']), true);
+                if ($info['fee'] != 1) {
+                    $pushData = [
+                        "type" => "163",
+                        "id" => $info['id']
+                    ];
+                } else {
+                    $url = $netease->module('song')->url($info['id']);
+                    $pushData = [
+                        "type" => "custom",
+                        "url" => $url['url'],
+                        "audio" => $url['url'],
+                        "title" => $info['name'],
+                        'content' => $info['author'][0]['name'] ?? '未知歌手',
+                        'image' => $info['pic_url']
+                    ];
+                }
+
+                dump($pushData);
                 $ws->push(json_encode([
                     "action"        => "send_group_msg",
                     "params" => [
                         "group_id" => $data['group_id'],
                         "message" => [
                             "type" => "music",
-                            "data" => [
-                                // "type" => "163",
-                                // "id" => 1381552460
-                                "type" => "custom",
-                                "url" => "http://m7.music.126.net/20210223150526/9dda17bcf764b1c0103a40ccc0ff350b/ymusic/NeFE5YHDzhiHZmKBqPXYrQ==/509951163021326872",
-                                "audio" => "http://m7.music.126.net/20210223150526/9dda17bcf764b1c0103a40ccc0ff350b/ymusic/NeFE5YHDzhiHZmKBqPXYrQ==/509951163021326872",
-                                "title" => "音乐标题"
-                            ]
+                            "data" => $pushData
                         ]
                     ],
                 ], JSON_UNESCAPED_UNICODE));

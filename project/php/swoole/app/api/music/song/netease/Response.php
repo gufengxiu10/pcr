@@ -15,9 +15,16 @@ class Response
         $this->format = new Format;
     }
 
-    public function toArray()
+    public function toArray(bool $once = false)
     {
-        return $this->format->parseAll($this->request->getBody());
+        $data = $this->format->parseAll((string)$this->request->getBody());
+        return $once === true ? $data[0] : $data;
+    }
+
+    public function url(bool $once = false)
+    {
+        $bool = $this->format->getData((string)$this->request->getBody());
+        return $once === true ? $bool[0] : $bool;
     }
 
     public function __call($method, $args)

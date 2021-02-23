@@ -23,7 +23,7 @@ class Song
      * @Date: 2021-02-20 09:57:14
      * @return {*}
      */
-    public function search(string $searchWord)
+    public function search(string $searchWord, bool $bool = false)
     {
         $res = Request::init()
             ->send(self::SEARCH_URL, 'POST', [
@@ -36,30 +36,7 @@ class Song
                 ]
             ]);
 
-        return $res->toArray();
-    }
-
-    /**
-     * @name: 音乐搜索
-     * @param {*}
-     * @author: ANNG
-     * @todo: 
-     * @Date: 2021-02-20 09:57:14
-     * @return {*}
-     */
-    public function searchOnce(string $searchWord)
-    {
-        $res = Request::init()->send(self::SEARCH_URL, 'POST', [
-            'data' => [
-                's'      => $searchWord,
-                'type'   =>  1,
-                'limit'  =>  30,
-                'total'  => 'true',
-                'offset' =>  0,
-            ]
-        ]);
-
-        return $res->toArray();
+        return $res->toArray($bool);
     }
 
     /**
@@ -70,7 +47,7 @@ class Song
      * @Date: 2021-02-20 09:57:14
      * @return {*}
      */
-    public function song(string $id)
+    public function song(string|int $id)
     {
         $res = Request::init()
             ->setProxy('http://192.168.1.8:8866')
@@ -91,18 +68,17 @@ class Song
      * @Date: 2021-02-20 16:04:50
      * @return {*}
      */
-    public function url(string $id)
+    public function url(string|int $id)
     {
         $res = Request::init()
             ->send(self::SONG_BASE_URL, 'POST', [
                 'data'  => [
-                    'ids' => array($id),
+                    'ids' => [$id],
                     'br'  => 320 * 1000,
                 ]
             ]);
 
-        $data = json_decode((string)$res->getBody(), true);
-        return $data;
+        return $res->url(true);
     }
 
     /**

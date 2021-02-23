@@ -35,23 +35,12 @@ class Request
                     'data' => $option['data'] ?? []
                 ]);
 
-                if ($this->cookies === true) {
-                    $fileName = dirname(__DIR__) . '/cookies/' . 'netease_cookies.txt';
-                    file_put_contents($fileName, (array)$res->getCookies());
-                }
-
                 return new Response($res);
             }
         }
 
         if (class_exists(Client::class)) {
         }
-    }
-
-    public function saveCookies(bool $bool): static
-    {
-        $this->cookies = $bool;
-        return $this;
     }
 
     private function check()
@@ -72,11 +61,17 @@ class Request
     private function getHeader()
     {
         if (!$this->header) {
-            $path = dirname(__DIR__) . '/cookies/' . 'netease_cookies.txt';
-            if ($this->cookies === false && file_exists(dirname(__DIR__) . '/cookies/' . 'netease_cookies.txt')) {
-                $cookies = file_get_contents($path);
-            } else {
-                $cookies = 'appver=1.5.9; os=osx; __remember_me=true; osver=%E7%89%88%E6%9C%AC%2010.13.5%EF%BC%88%E7%89%88%E5%8F%B7%2017F77%EF%BC%89;';
+            $path = dirname(__DIR__, 2) . '/cookies/' . 'netease_cookies.txt';
+            $cookies = 'appver=1.5.9; os=osx; __remember_me=true; osver=%E7%89%88%E6%9C%AC%2010.13.5%EF%BC%88%E7%89%88%E5%8F%B7%2017F77%EF%BC%89;';
+            if ($this->cookies === false && file_exists($path)) {
+                $cookiesData = json_decode(file_get_contents($path), true);
+                if (!empty($cookiesData['__csrf'])) {
+                    $str = [];
+                    foreach ($cookiesData as $key => $val) {
+                        $str[] = $key . '=' . $val;
+                    }
+                    $cookies = implode('; ', $str);
+                }
             }
 
             $this->header = [
@@ -99,10 +94,5 @@ class Request
     {
         $this->proxy = $value;
         return $this;
-    }
-
-    public function __tostring()
-    {
-        // fd 
     }
 }

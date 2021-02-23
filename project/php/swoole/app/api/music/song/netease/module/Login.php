@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace app\api\music\song\netease\module;
 
 use app\api\music\song\netease\Request;
-
+use Swlib\Saber\Response;
 
 class Login
 {
@@ -22,9 +22,8 @@ class Login
      */
     public function phone()
     {
+        // dump(dirname(__DIR__, 3));
         $res = Request::init()
-            ->saveCookies(true)
-            ->setProxy('http://192.168.1.8:8866')
             ->send(self::PHONE_URL, 'POST', [
                 'data'  => [
                     'phone' => '13672666381',
@@ -35,6 +34,17 @@ class Login
                 ]
             ]);
 
-        return (string)$res->getBody();
+
+        $cookiesOrigin = $res->getCookies();
+        $cookies = [];
+        foreach ($cookiesOrigin as $value) {
+            $cookies[$value->name] = $value->value;
+        }
+
+        $fildName = dirname(__DIR__, 3) . '/cookies/netease_cookies.txt';
+        file_put_contents($fildName, json_encode($cookies, JSON_UNESCAPED_UNICODE));
+
+        // dump((string)$res->getBody());
+        // return $res;
     }
 }

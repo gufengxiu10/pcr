@@ -12,7 +12,9 @@ class Base
     public function test()
     {
         $netease = new Netease;
-        $ref = $netease->module('song')->url('1381552460');
+        // $ref = $netease->module('login')->phone();
+        $ref = $netease->module('song')->search('火影', true);
+
         dump($ref);
         // dd(dirname(__DIR__));die;
         // $netease = new Song();
