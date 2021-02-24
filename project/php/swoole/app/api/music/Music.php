@@ -42,6 +42,7 @@ abstract class Music
             dump($e->getMessage());
         } catch (MusicExcption $e) {
             if ($this->getMessage() == '请求失败') {
+                dump($this->getMessage());
                 call_user_func_array([$this, $method], $args);
             }
         }

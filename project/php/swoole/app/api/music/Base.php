@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\api\music;
 
+use app\api\music\facade\Cache;
 use app\api\music\song\netease\Netease;
 
 class Base
@@ -12,10 +13,11 @@ class Base
     public function test()
     {
         $netease = new Netease;
-        // $ref = $netease->module('login')->phone();
-        $ref = $netease->module('song')->search('火影', true);
+        // $ref = $netease->module('user')->info();
+        $ref = $netease->module('login')->phone();
+        // $ref = $netease->module('song')->search('火影', true);
 
-        dump($ref);
+        // dump($ref);
         // dd(dirname(__DIR__));die;
         // $netease = new Song();
         // return $netease->check('1381552460');

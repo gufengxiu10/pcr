@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace app\api\music\song\netease;
 
+use app\api\music\Cache;
 use GuzzleHttp\Client;
 use Swlib\Saber;
 use Swoole\Coroutine;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
 class Request
 {
@@ -21,10 +23,13 @@ class Request
     {
         if ($this->check()) {
             if (class_exists(Saber::class)) {
-                $client = Saber::create([
-                    'headers' =>  $this->getHeader(),
-                ]);
+                $option = [];
+                $option['headers'] = $this->getHeader();
+                if ($this->proxy) {
+                    $option['proxy'] = $this->proxy;
+                }
 
+                $client = Saber::create($option);
                 if (isset($option['data'])) {
                     $option['data'] = Encrypt::init()->aescbc($option['data']);
                 }
@@ -61,10 +66,11 @@ class Request
     private function getHeader()
     {
         if (!$this->header) {
-            $path = dirname(__DIR__, 2) . '/cookies/' . 'netease_cookies.txt';
+            $cache = new FilesystemAdapter();
+            $cacheCookies = $cache->getItem('netease.cookies');
             $cookies = 'appver=1.5.9; os=osx; __remember_me=true; osver=%E7%89%88%E6%9C%AC%2010.13.5%EF%BC%88%E7%89%88%E5%8F%B7%2017F77%EF%BC%89;';
-            if ($this->cookies === false && file_exists($path)) {
-                $cookiesData = json_decode(file_get_contents($path), true);
+            if (Cache::init()->has('netease.cookies')) {
+                $cookiesData = Cache::init()->get('netease.cookies');
                 if (!empty($cookiesData['__csrf'])) {
                     $str = [];
                     foreach ($cookiesData as $key => $val) {

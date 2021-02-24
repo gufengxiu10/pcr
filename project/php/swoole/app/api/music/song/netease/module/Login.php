@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace app\api\music\song\netease\module;
 
+use app\api\music\Cache;
+use app\api\music\song\netease\Excption;
 use app\api\music\song\netease\Request;
-use Swlib\Saber\Response;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
 class Login
 {
@@ -22,29 +24,43 @@ class Login
      */
     public function phone()
     {
-        // dump(dirname(__DIR__, 3));
-        $res = Request::init()
-            ->send(self::PHONE_URL, 'POST', [
-                'data'  => [
-                    'phone' => '13672666381',
-                    'countrycode' => '86',
-                    'password' => md5('gufengxiu10'),
-                    'rememberLogin' => 'true',
-                    'csrf_token' => ''
-                ]
+        if (!Cache::init()->has('netease.info')) {
+            $res = Request::init()
+                ->send(self::PHONE_URL, 'POST', [
+                    'data'  => [
+                        'phone' => '13672666381',
+                        'countrycode' => '86',
+                        'password' => md5('gufengxiu10'),
+                        'rememberLogin' => 'true',
+                        'csrf_token' => ''
+                    ]
+                ]);
+
+            if (!$res->isSuccess()) {
+                throw new Excption('请求失败');
+            }
+
+            $data = json_decode((string)$res->getBody(), true);
+            dump((string)$res->getBody());
+            if (!$data) {
+                throw new Excption('请求失败');
+            }
+
+
+            $cookiesOrigin = $res->getCookies();
+            $cookies = [];
+            foreach ($cookiesOrigin as $value) {
+                $cookies[$value->name] = $value->value;
+            }
+
+
+
+            Cache::init()->set('netease.cookies', $cookies);
+            Cache::init()->set('netease.info', $data, [
+                'expires' => 3600 * 20
             ]);
-
-
-        $cookiesOrigin = $res->getCookies();
-        $cookies = [];
-        foreach ($cookiesOrigin as $value) {
-            $cookies[$value->name] = $value->value;
         }
 
-        $fildName = dirname(__DIR__, 3) . '/cookies/netease_cookies.txt';
-        file_put_contents($fildName, json_encode($cookies, JSON_UNESCAPED_UNICODE));
-
-        // dump((string)$res->getBody());
-        // return $res;
+        return Cache::init()->get('netease.info');
     }
 }

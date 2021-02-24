@@ -21,6 +21,8 @@
         "swoole/ide-helper": "^4.6",
         "reasno/swoole-aliyunoss-addon": "^1.0",
         "metowolf/meting": "^1.5",
-        "guzzlehttp/guzzle": "^7.0"
+        "guzzlehttp/guzzle": "^7.0",
+        "symfony/cache": "^5.2",
+        "symfony/filesystem": "^5.2"
     }
 }
