@@ -23,13 +23,13 @@ class Request
     {
         if ($this->check()) {
             if (class_exists(Saber::class)) {
-                $option = [];
-                $option['headers'] = $this->getHeader();
+                $optionInit = [];
+                $optionInit['headers'] = $this->getHeader();
                 if ($this->proxy) {
-                    $option['proxy'] = $this->proxy;
+                    $optionInit['proxy'] = $this->proxy;
                 }
 
-                $client = Saber::create($option);
+                $client = Saber::create($optionInit);
                 if (isset($option['data'])) {
                     $option['data'] = Encrypt::init()->aescbc($option['data']);
                 }
@@ -66,9 +66,7 @@ class Request
     private function getHeader()
     {
         if (!$this->header) {
-            $cache = new FilesystemAdapter();
-            $cacheCookies = $cache->getItem('netease.cookies');
-            $cookies = 'appver=1.5.9; os=osx; __remember_me=true; osver=%E7%89%88%E6%9C%AC%2010.13.5%EF%BC%88%E7%89%88%E5%8F%B7%2017F77%EF%BC%89;';
+            $cookies = 'appver=1.5.9; os=pc; __remember_me=true; osver=%E7%89%88%E6%9C%AC%2010.13.5%EF%BC%88%E7%89%88%E5%8F%B7%2017F77%EF%BC%89;';
             if (Cache::init()->has('netease.cookies')) {
                 $cookiesData = Cache::init()->get('netease.cookies');
                 if (!empty($cookiesData['__csrf'])) {

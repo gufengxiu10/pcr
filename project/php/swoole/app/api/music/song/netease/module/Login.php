@@ -24,6 +24,7 @@ class Login
      */
     public function phone()
     {
+        dump(Cache::init()->has('netease.info'));
         if (!Cache::init()->has('netease.info')) {
             $res = Request::init()
                 ->send(self::PHONE_URL, 'POST', [
