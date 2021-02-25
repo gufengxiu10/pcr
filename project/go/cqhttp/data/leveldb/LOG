@@ -544,3 +544,13 @@
 16:53:20.928562 version@stat F·[1 1] S·1MiB[34KiB 1MiB] Sc·[0.25 0.01]
 16:53:20.985388 db@janitor F·4 G·0
 16:53:20.985571 db@open done T·116.9717ms
+=============== Feb 25, 2021 (UTC) ===============
+01:06:36.547863 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+01:06:36.600730 version@stat F·[1 1] S·1MiB[34KiB 1MiB] Sc·[0.25 0.01]
+01:06:36.602841 db@open opening
+01:06:36.649879 version@stat F·[1 1] S·1MiB[34KiB 1MiB] Sc·[0.25 0.01]
+01:06:36.747553 db@janitor F·7 G·3
+01:06:36.748795 db@janitor removing journal-90
+01:06:36.757593 db@janitor removing table-92
+01:06:36.771083 db@janitor removing manifest-91
+01:06:36.775262 db@open done T·169.3937ms

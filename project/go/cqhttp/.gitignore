@@ -1,4 +1,3 @@
-data/cache
-data/images
-data/leveldb
+data
 logs
+codec

@@ -26,6 +26,7 @@ class Login
     {
         if (!Cache::init()->has('netease.info')) {
             $res = Request::init()
+                ->setProxy('http://192.168.1.8:8866')
                 ->send(self::PHONE_URL, 'POST', [
                     'data'  => [
                         'phone' => '13672666381',
