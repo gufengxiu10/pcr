@@ -24,6 +24,7 @@ class Login
      */
     public function phone()
     {
+        dump(Cache::init()->has('netease.info'));
         if (!Cache::init()->has('netease.info')) {
             $res = Request::init()
                 ->setProxy('http://192.168.1.8:8866')
