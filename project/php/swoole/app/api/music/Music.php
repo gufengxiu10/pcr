@@ -6,6 +6,7 @@ namespace app\api\music;
 
 use ReflectionClass;
 use ReflectionException;
+use Swlib\Http\Exception\ConnectException;
 use Throwable;
 
 abstract class Music
@@ -38,6 +39,8 @@ abstract class Music
             } else {
                 return '方法不存在';
             }
+        } catch (ConnectException $e) {
+            dump($e->getMessage());
         } catch (ReflectionException $e) {
             dump($e->getMessage());
         } catch (MusicExcption $e) {

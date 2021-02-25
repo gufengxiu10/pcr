@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace app\api\music\song\netease\module;
 
 use app\api\music\Cache;
+use app\api\music\facade\Cache as FacadeCache;
+use app\api\music\song\netease\format\Login as FormatLogin;
 use app\api\music\song\netease\Excption;
 use app\api\music\song\netease\Request;
-use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
 class Login
 {
@@ -24,8 +25,7 @@ class Login
      */
     public function phone()
     {
-        dump(Cache::init()->has('netease.info'));
-        if (!Cache::init()->has('netease.info')) {
+        if (!FacadeCache::has('info')) {
             $res = Request::init()
                 ->setProxy('http://192.168.1.8:8866')
                 ->send(self::PHONE_URL, 'POST', [
@@ -42,13 +42,6 @@ class Login
                 throw new Excption('请求失败');
             }
 
-            $data = json_decode((string)$res->getBody(), true);
-            dump((string)$res->getBody());
-            if (!$data) {
-                throw new Excption('请求失败');
-            }
-
-
             $cookiesOrigin = $res->getCookies();
             $cookies = [];
             foreach ($cookiesOrigin as $value) {
@@ -56,13 +49,14 @@ class Login
             }
 
 
-
-            Cache::init()->set('netease.cookies', $cookies);
-            Cache::init()->set('netease.info', $data, [
-                'expires' => 3600 * 20
+            FacadeCache::set('cookies', $cookies);
+            $data = new FormatLogin($res->getBody());
+            $info = $data->info();
+            FacadeCache::set('info', $data->getData(), [
+                'expires' => $info['login']['expiresIn'] - time()
             ]);
         }
 
-        return Cache::init()->get('netease.info');
+        return FacadeCache::get('info');
     }
 }

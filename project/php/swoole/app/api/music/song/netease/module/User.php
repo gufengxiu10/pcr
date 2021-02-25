@@ -10,7 +10,7 @@ use app\api\music\song\netease\Request;
 
 class User
 {
-    // 手机登录
+    //用户详情
     const INFO_URL = '/v1/user/detail/';
 
     /**
@@ -30,7 +30,110 @@ class User
                 'data'  => []
             ]);
 
-        dump($res);
-        return (string)$res->getBody();
+        return $res;
+    }
+
+    /**
+     * @name: 用户电台
+     * @param {*}
+     * @author: ANNG
+     * @todo: 
+     * @Date: 2021-02-25 17:40:24
+     * @return {*}
+     */
+    public function dj()
+    {
+        # code...
+    }
+
+    /**
+     * @name: 用户动态
+     * @param {*} Type
+     * @author: ANNG
+     * @todo: 
+     * @Date: 2021-02-25 17:40:44
+     * @return {*}
+     */
+    public function dynamic()
+    {
+        # code...
+    }
+
+    /**
+     * @name: 用户粉丝
+     * @param {*} Type
+     * @author: ANNG
+     * @todo: 
+     * @Date: 2021-02-25 17:41:24
+     * @return {*}
+     */
+    public function fans()
+    {
+        # code...
+    }
+
+    /**
+     * @name: 用户关注
+     * @param {*}
+     * @author: ANNG
+     * @todo: 
+     * @Date: 2021-02-25 17:42:19
+     * @return {*}
+     */
+    public function follow()
+    {
+        # code...
+    }
+
+    /**
+     * @name: 用户歌单
+     * @param {*}
+     * @author: ANNG
+     * @todo: 
+     * @Date: 2021-02-25 17:43:39
+     * @return {*}
+     */
+    public function songSheet()
+    {
+        # code...
+    }
+
+    /**
+     * @name: 用户排行
+     * @param {*}
+     * @author: ANNG
+     * @todo: 
+     * @Date: 2021-02-25 17:44:26
+     * @return {*}
+     */
+    public function record()
+    {
+        # code...
+    }
+
+    /**
+     * @name: 收藏计数
+     * @param {*}
+     * @author: ANNG
+     * @todo: 
+     * @Date: 2021-02-25 17:45:33
+     * @return {*}
+     */
+    public function subcount()
+    {
+        # code...
+    }
+
+    /**
+     * @name: 编辑用户信息
+     * @param {*} Type
+     * @author: ANNG
+     * @todo: 
+     * @Date: 2021-02-25 17:46:04
+     * @return {*}
+     */
+    public function update()
+    {
+        # code...
     }
 }

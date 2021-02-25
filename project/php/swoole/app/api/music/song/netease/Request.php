@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace app\api\music\song\netease;
 
 use app\api\music\Cache;
+use app\api\music\facade\Cache as FacadeCache;
 use GuzzleHttp\Client;
 use Swlib\Saber;
 use Swoole\Coroutine;
@@ -21,31 +22,36 @@ class Request
 
     public function send(string $url, $method = 'GET', array $option = [])
     {
-        if ($this->check()) {
-            if (class_exists(Saber::class)) {
-                $optionInit = [];
-                $optionInit['headers'] = $this->getHeader();
-                if ($this->proxy) {
-                    $optionInit['proxy'] = $this->proxy;
-                }
-
-                $client = Saber::create($optionInit);
-                if (isset($option['data'])) {
-                    $option['data'] = Encrypt::init()->aescbc($option['data']);
-                }
-
-                $res = $client->request([
-                    'uri' => self::BASE_URL . str_replace(self::BASE_URL, '', $url),
-                    'method' => $method,
-                    'data' => $option['data'] ?? []
-                ]);
-
-                return new Response($res);
+        $cacheName = implode('_', array_filter(explode('/', $url)));
+        if (!FacadeCache::has($cacheName)) {
+            $optionInit = [];
+            $optionInit['headers'] = $this->getHeader();
+            if ($this->proxy) {
+                $optionInit['proxy'] = $this->proxy;
             }
-        }
 
-        if (class_exists(Client::class)) {
-        }
+            $client = Saber::create($optionInit);
+
+            $cookies = $this->getCookie(false);
+            if (isset($cookies['__csrf'])) {
+                $option['data'] = $cookies ?: '';
+            }
+
+            if (!empty($option['data'])) {
+                $option['data'] = Encrypt::init()->aescbc($option['data']);
+            }
+
+            $res = $client->request([
+                'uri' => self::BASE_URL . str_replace(self::BASE_URL, '', $url),
+                'method' => $method,
+                'data' => $option['data'] ?? []
+            ]);
+
+
+            FacadeCache::set($cacheName, new Response($res));
+        };
+
+        return FacadeCache::get($cacheName);
     }
 
     private function check()
@@ -66,21 +72,11 @@ class Request
     private function getHeader()
     {
         if (!$this->header) {
-            $cookies = 'appver=1.5.9; os=pc; __remember_me=true; osver=%E7%89%88%E6%9C%AC%2010.13.5%EF%BC%88%E7%89%88%E5%8F%B7%2017F77%EF%BC%89;';
-            if (Cache::init()->has('netease.cookies')) {
-                $cookiesData = Cache::init()->get('netease.cookies');
-                if (!empty($cookiesData['__csrf'])) {
-                    $str = [];
-                    foreach ($cookiesData as $key => $val) {
-                        $str[] = $key . '=' . $val;
-                    }
-                    $cookies = implode('; ', $str);
-                }
-            }
+
 
             $this->header = [
                 'Referer'         => 'https://music.163.com/',
-                'Cookie'          => $cookies,
+                'Cookie'          => $this->getCookie(),
                 'User-Agent'      => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_5) AppleWebKit/605.1.15 (KHTML, like Gecko)',
                 'X-Real-IP'       => long2ip(mt_rand(1884815360, 1884890111)),
                 'Accept'          => '*/*',
@@ -93,6 +89,27 @@ class Request
         return $this->header;
     }
 
+    private function getCookie(bool $string = true)
+    {
+        $cookies = [
+            'appver' => '1.5.9',
+            'os'    => 'pc',
+        ];
+
+        if (Cache::init()->has('netease.cookies')) {
+            $cookies = Cache::init()->get('netease.cookies');
+        }
+
+        if ($string === true) {
+            $str = [];
+            foreach ($cookies as $key => $val) {
+                $str[] = $key . '=' . $val;
+            }
+            return implode('; ', $str);
+        }
+
+        return $cookies;
+    }
 
     public function setProxy($value)
     {

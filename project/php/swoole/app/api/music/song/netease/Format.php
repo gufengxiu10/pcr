@@ -41,6 +41,10 @@ class Format
             }
         }
 
+        if (empty($format)) {
+            $format = $data;
+        }
+
         return $format;
     }
 

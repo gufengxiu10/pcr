@@ -14,6 +14,7 @@ class Cache
 
     //缓存目录
     protected $dir;
+    private string $namespance = '';
 
     public static function init()
     {
@@ -26,25 +27,15 @@ class Cache
 
     private function getCache()
     {
-        return new FilesystemAdapter('', 0, $this->getCacheDir());
+        return new FilesystemAdapter('netease', 2 * 60, $this->getCacheDir());
     }
 
-    public  function set(string $cacheName, string|array|int $value, array $option = [])
+    public  function set(string $cacheName, $value, array $option = [])
     {
         $cache = $this->getCache();
         $key = $cacheName;
 
-        if (strpos($cacheName, '.') !== false) {
-            $cacheName = explode('.', $cacheName);
-            $key = $cacheName[0];
-            $nvalue = [];
-            $nvalue[$cacheName[1]] = $value;
-            $value = $nvalue;
-        }
-
         $name = $cache->getItem($key);
-        $get = (array)$name->get();
-        $value = array_merge($get, $value);
         $name->set($value);
         isset($option['expires']) ? $name->expiresAfter($option['expires']) : '';
         $cache->save($name);
@@ -55,16 +46,12 @@ class Cache
     public function get(string $cacheName)
     {
         $cache = $this->getCache();
-        if (strpos($cacheName, '.') !== false) {
-            $cacheName = explode('.', $cacheName);
-            $name = $cache->getItem($cacheName[0]);
-            $getData = $name->get();
-            $data = $getData[$cacheName[1]] ?? null;
-        } else {
-            $name = $cache->getItem($cacheName);
-            $data = $name->get();
-        }
 
+        $name = $cache->getItem($cacheName);
+        $data = $name->get();
+        if (is_string($data) && $jsonData = json_decode($data, true)) {
+            $data = $jsonData;
+        }
         unset($cache);
         unset($name);
         return $data;
@@ -73,24 +60,27 @@ class Cache
     public function has(string $cacheName)
     {
         $cache = $this->getCache();
-        if (strpos($cacheName, '.') !== false) {
-            $cacheName = explode('.', $cacheName);
-            $name = $cache->getItem($cacheName[0]);
-            if (!$name->isHit()) {
-                return false;
-            }
+        // if (strpos($cacheName, '.') !== false) {
+        //     $cacheName = explode('.', $cacheName);
+        //     $name = $cache->getItem($cacheName[0]);
+        //     if (!$name->isHit()) {
+        //         return false;
+        //     }
 
-            $getData = $name->get();
-            if (isset($getData[$cacheName[1]]) == null) {
-                return false;
-            }
-        } else {
-            $name = $cache->getItem($cacheName);
-            if (!$name->isHit()) {
-                return false;
-            }
+        //     $getData = $name->get();
+        //     if (isset($getData[$cacheName[1]]) == null) {
+        //         return false;
+        //     }
+        // } else {
+        //     $name = $cache->getItem($cacheName);
+        //     if (!$name->isHit()) {
+        //         return false;
+        //     }
+        // }
+        $name = $cache->getItem($cacheName);
+        if (!$name->isHit()) {
+            return false;
         }
-
         return true;
     }
 
@@ -106,7 +96,6 @@ class Cache
     {
         $fs = new Filesystem;
         $path = $this->getCacheDir();
-        dump($path);
         if ($fs->exists($path)) {
             $fs->remove($path);
         }
