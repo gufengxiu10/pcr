@@ -9,15 +9,14 @@ use app\api\music\song\netease\Netease;
 
 class Base
 {
-
     public function test()
     {
         $netease = new Netease;
-        // $ref = $netease->module('user')->info();
-        $ref = $netease->module('login')->phone();
+        $ref = $netease->module('album')->list();
+        // $ref = $netease->module('login')->phone();
         // $ref = $netease->module('song')->search('火影', true);
 
-        // dump($ref);
+        dump($ref->getBody());
         // dd(dirname(__DIR__));die;
         // $netease = new Song();
         // return $netease->check('1381552460');

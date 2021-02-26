@@ -27,7 +27,6 @@ class Login
     {
         if (!FacadeCache::has('info')) {
             $res = Request::init()
-                ->setProxy('http://192.168.1.8:8866')
                 ->send(self::PHONE_URL, 'POST', [
                     'data'  => [
                         'phone' => '13672666381',
@@ -48,10 +47,12 @@ class Login
                 $cookies[$value->name] = $value->value;
             }
 
-
-            FacadeCache::set('cookies', $cookies);
             $data = new FormatLogin($res->getBody());
             $info = $data->info();
+            FacadeCache::set('cookies', $cookies, [
+                'expires' => $info['login']['expiresIn'] - time()
+            ]);
+
             FacadeCache::set('info', $data->getData(), [
                 'expires' => $info['login']['expiresIn'] - time()
             ]);

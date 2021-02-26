@@ -15,13 +15,29 @@ class Request
 {
 
     private array $header = [];
-    private bool $cookies = false;
     private string|null|array $proxy = '';
 
     const BASE_URL = 'http://music.163.com/weapi';
 
     public function send(string $url, $method = 'GET', array $option = [])
     {
+        if (str_contains($url, '{id}')) {
+            $info = FacadeCache::get('info');
+            if (!$info) {
+                throw new Excption('未登录');
+            }
+            $url = str_replace('{id}', (string)$info['account']['id'], $url);
+        }
+
+        if (array_key_exists('uid', $option['data'])) {
+            $info = FacadeCache::get('info');
+            if (!$info) {
+                throw new Excption('未登录');
+            }
+            $option['data']['uid'] = (string)$info['account']['id'];
+        }
+
+
         $cacheName = implode('_', array_filter(explode('/', $url)));
         if (!FacadeCache::has($cacheName)) {
             $optionInit = [];
@@ -34,7 +50,7 @@ class Request
 
             $cookies = $this->getCookie(false);
             if (isset($cookies['__csrf'])) {
-                $option['data'] = $cookies ?: '';
+                $option['data']['__csrf'] = $cookies['__csrf'];
             }
 
             if (!empty($option['data'])) {
@@ -47,6 +63,10 @@ class Request
                 'data' => $option['data'] ?? []
             ]);
 
+
+            if (isset($option['cache']) && $option['cache'] === false) {
+                return new Response($res);
+            }
 
             FacadeCache::set($cacheName, new Response($res));
         };
@@ -96,8 +116,8 @@ class Request
             'os'    => 'pc',
         ];
 
-        if (Cache::init()->has('netease.cookies')) {
-            $cookies = Cache::init()->get('netease.cookies');
+        if (FacadeCache::get('info')) {
+            $cookies = FacadeCache::get('cookies');
         }
 
         if ($string === true) {
