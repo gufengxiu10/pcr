@@ -50,6 +50,8 @@ class App
         ]);
         run(function () {
             $this->server = new Server('0.0.0.0', 9502);
+            dump(get_class_methods($this->server::class));
+            dump(get_class_vars($this->server::class));
             //启动任务调度器
             go(function () {
                 $this->crontabStart();
@@ -59,7 +61,6 @@ class App
                 $this->createMysqlPool();
             });
 
-            $this->ico('Test', [$this->container]);
             $this->server->handle('/', function ($request, $ws) {
                 Connect::set($ws->fd, [
                     'ws'    => $ws

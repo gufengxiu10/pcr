@@ -2,20 +2,21 @@
 
 declare(strict_types=1);
 
-require_once "vendor/autoload.php";
-require_once './core/Base.php';
-
-use Anng\lib\facade\App;
-use Anng\lib\facade\Config;
-use Anng\lib\facade\Container;
-use Anng\lib\facade\Db;
-use Metowolf\Meting;
-use Swoole\Process\Manager;
+use Swlib\SaberGM;
 
 use function Co\run;
 
-date_default_timezone_set("Asia/Shanghai");
+require_once "vendor/autoload.php";
+
 run(function () {
-    $client = new \app\api\music\Base();
-    $client->test();
+    for ($i = 0; $i < 1500; $i++) {
+        go(function () {
+            $websocket = SaberGM::websocket('ws://127.0.0.1:9501');
+            while (true) {
+                // echo $websocket->recv(1) . "\n";
+                $websocket->push("hello");
+                co::sleep(1);
+            }
+        });
+    }
 });
