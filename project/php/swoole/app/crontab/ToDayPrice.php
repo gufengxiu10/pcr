@@ -12,6 +12,7 @@ class ToDayPrice
 {
     public function run()
     {
+        return;
         $group = [415446505];
         // $group = [415446505, 93958924];
         if (!Redis::exists('lolicon')) {

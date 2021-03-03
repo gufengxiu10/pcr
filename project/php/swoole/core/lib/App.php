@@ -2,13 +2,21 @@
 
 namespace Anng\lib;
 
+use Anng\lib\facade\Config;
 use Anng\lib\facade\Connect;
 use Anng\lib\facade\Container;
+use Anng\lib\facade\Crontab;
+use Anng\lib\facade\Db;
+use Anng\lib\facade\Env;
+use Anng\lib\facade\Reflection;
 use ReflectionClass;
 
 use function Co\run;
 use Co\Http\Server;
-use Swoole\Coroutine;
+use Swoole\Process;
+use Swoole\Process\Manager;
+use Swoole\Process\Pool;
+use Swoole\Table;
 
 class App
 {
@@ -25,8 +33,8 @@ class App
         date_default_timezone_set("Asia/Shanghai");
         $this->rootPath = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR;
         $this->container = Container::getInstance();
-        // $this->init();
     }
+
 
     public function init()
     {
@@ -44,46 +52,48 @@ class App
 
     public function start()
     {
+        $table = $this->createTable();
+        $pm = new Manager();
         $this->init();
+
+        $pm->add(function () {
+            run(function () {
+                $this->crontabStart();
+            });
+        });
+
+        $pm->addBatch(2, function (Pool $pool, int $workerId) use ($table) {
+            $this->server($table);
+        });
+
+        $pm->start();
+    }
+
+    public function server($table)
+    {
         \Swoole\Coroutine::set([
             'hook_flags' => SWOOLE_HOOK_CURL
         ]);
-        run(function () {
-            $this->server = new Server('0.0.0.0', 9502);
-            dump(get_class_methods($this->server::class));
-            dump(get_class_vars($this->server::class));
-            //启动任务调度器
-            go(function () {
-                $this->crontabStart();
-            });
 
-            go(function () {
-                $this->createMysqlPool();
-            });
-
+        run(function () use ($table) {
+            $this->server = new Server('0.0.0.0', 9501, false, true);
+            $this->createMysqlPool();
             $this->server->handle('/', function ($request, $ws) {
-                Connect::set($ws->fd, [
-                    'ws'    => $ws
-                ]);
                 $ws->upgrade();
                 while (true) {
                     $frame = $ws->recv();
                     if ($frame === '') {
-                        Connect::pop($ws->fd);
                         $ws->close();
                         break;
                     } else if ($frame === false) {
-                        Connect::pop($ws->fd);
                         echo "error : " . swoole_last_error() . "\n";
                         break;
                     } else {
                         if ($frame->data == 'close' || get_class($frame) === Swoole\WebSocket\CloseFrame::class) {
-                            Connect::pop($ws->fd);
                             $ws->close();
                             return;
                         }
-                        dump($ws->fd . ':' . $frame->data);
-                        $this->ico('Message', [$ws, $frame]);
+                        $this->ico('WebSocket', [$ws]);
                     }
                 }
             });
@@ -99,9 +109,7 @@ class App
      */
     public function crontabStart(): void
     {
-        $this->container
-            ->crontab
-            ->setTask($this->container->config->get('crontab'))
+        Crontab::setTask(Config::get('crontab'))
             ->run();
     }
 
@@ -115,18 +123,25 @@ class App
      */
     public function createMysqlPool()
     {
-        $this->container->db
-            ->setConfig($this->container->config->get('datebase'))
+        Db::setConfig(Config::get('datebase'))
             ->create();
     }
 
 
     public function ico($method, ...$argc)
     {
-        $className = "\\app\\event\\" . $method;
-        $reflect = new ReflectionClass($className);
-        $object = $reflect->getConstructor() ? $reflect->newInstanceArgs(...$argc) : $reflect->newInstanceArgs([]);
-        return $object;
+        $className = "\\Anng\\event\\" . $method;
+        Reflection::setDefaultMethod('run')
+            ->instance($className);
+    }
+
+    public function createTable()
+    {
+        $table = new Table(1024);
+        $table->column('id', Table::TYPE_INT, 4);
+        $table->column('fd', Table::TYPE_INT, 64);
+        $table->create();
+        return $table;
     }
 
     /**
