@@ -9,10 +9,7 @@ use Dotenv\Dotenv;
 
 class Env
 {
-    public function __construct()
-    {
-        $this->loading();
-    }
+    private $path;
 
     /**
      * @name: env文件加载
@@ -22,10 +19,17 @@ class Env
      * @Date: 2021-01-05 10:48:26
      * @return {*}
      */
-    public function loading()
+    public function loading(): void
     {
-        $dotenv = Dotenv::createMutable(realpath(App::getEnv()));
+        $dotenv = Dotenv::createMutable(realpath($this->path));
         $dotenv->load();
+    }
+
+
+    public function setPath($path): static
+    {
+        $this->path = $path;
+        return $this;
     }
 
     /**

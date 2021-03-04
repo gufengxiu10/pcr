@@ -7,6 +7,6 @@ class WebSocket
 {
     public function run()
     {
-        dump(1);
+        
     }
 }

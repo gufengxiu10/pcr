@@ -9,7 +9,6 @@ use Anng\lib\facade\Crontab;
 use Anng\lib\facade\Db;
 use Anng\lib\facade\Env;
 use Anng\lib\facade\Reflection;
-use ReflectionClass;
 
 use function Co\run;
 use Co\Http\Server;
@@ -32,7 +31,6 @@ class App
     {
         date_default_timezone_set("Asia/Shanghai");
         $this->rootPath = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR;
-        $this->container = Container::getInstance();
     }
 
 
@@ -46,36 +44,38 @@ class App
         }
 
         foreach ($files as $file) {
-            $this->container->config->load($file, pathinfo($file, PATHINFO_FILENAME));
+            Config::load($file, pathinfo($file, PATHINFO_FILENAME));
         }
+
+
+        //加载ENV文件
+        Env::setPath($this->getEnv())->loading();
     }
 
     public function start()
     {
-        $table = $this->createTable();
         $pm = new Manager();
         $this->init();
-
         $pm->add(function () {
             run(function () {
                 $this->crontabStart();
             });
         });
 
-        $pm->addBatch(2, function (Pool $pool, int $workerId) use ($table) {
-            $this->server($table);
+        $pm->addBatch(2, function (Pool $pool, int $workerId) {
+            $this->server();
         });
 
         $pm->start();
     }
 
-    public function server($table)
+    public function server()
     {
         \Swoole\Coroutine::set([
             'hook_flags' => SWOOLE_HOOK_CURL
         ]);
 
-        run(function () use ($table) {
+        run(function () {
             $this->server = new Server('0.0.0.0', 9501, false, true);
             $this->createMysqlPool();
             $this->server->handle('/', function ($request, $ws) {
