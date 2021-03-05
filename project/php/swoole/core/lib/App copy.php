@@ -87,9 +87,9 @@ class App
 
         run(function () use ($pool, $workerId) {
             $this->server = new Server('0.0.0.0', 9502, false, true);
-
             $this->createMysqlPool();
             $this->server->handle('/', function ($request, $ws) use ($pool, $workerId) {
+                FacadeTable::set($workerId . '_' . $ws->fd, ['data' => $ws->fd]);
                 $ws->upgrade();
                 while (true) {
                     $frame = $ws->recv();

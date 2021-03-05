@@ -6,8 +6,6 @@ namespace Anng\lib;
 
 use Swoole\Table as SwooleTable;
 
-use function Co\run;
-
 class Table
 {
     private SwooleTable $table;
@@ -24,8 +22,15 @@ class Table
         return $this;
     }
 
-    public function set($key, $data)
+    public function set($key, $data, $append = false)
     {
+        if ($append === true) {
+            $d = $this->table->get($key);
+            if (!empty($d)) {
+                foreach ($data as $k => &$v) {
+                }
+            }
+        }
         return $this->table->set($key, $data);
     }
 
@@ -42,5 +47,11 @@ class Table
     public function del($key)
     {
         return $this->table->del($key);
+    }
+
+
+    public function getinstance()
+    {
+        return $this->table;
     }
 }

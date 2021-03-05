@@ -6,12 +6,18 @@ namespace app\crontab;
 
 use Anng\lib\facade\Connect;
 use Anng\lib\facade\Redis;
+use Anng\lib\facade\Table;
 use Swlib\SaberGM;
 
 class ToDayPrice
 {
     public function run()
     {
+        // $table = Table::getinstance();
+        // foreach ($table as $key => $row) {
+        //     dump($key);
+        // }
+        dump(1);
         return;
         $group = [415446505];
         // $group = [415446505, 93958924];

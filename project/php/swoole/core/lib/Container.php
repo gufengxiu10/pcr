@@ -117,7 +117,7 @@ class Container implements ContainerInterface
         if (isset($this->instances[$abstract])) {
             return $this->instances[$abstract];
         }
-        
+
         $object = $this->inovkeClass($abstract, $vars);
         $this->instances[$abstract] = $object;
         return $object;

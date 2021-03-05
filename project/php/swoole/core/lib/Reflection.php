@@ -75,10 +75,8 @@ class Reflection
 
         $data = [];
         //重置数组指针
-        reset($args);
         //用于判断数组键值是以自然数为键,如果是则按顺序赋值
         $type = key($args) === 0 ? 1 : 0;
-
         foreach ($params as $value) {
             $paramName = $value->getName();
             if (!is_null($value->getType())) {
@@ -150,7 +148,7 @@ class Reflection
     {
         $this->defaultMethod = [
             'method' => $method,
-            'args' => []
+            'args' => $args
         ];
         return $this;
     }

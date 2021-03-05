@@ -9,6 +9,8 @@ use Anng\lib\Connect;
 use Anng\lib\Facade;
 use Anng\lib\Redis;
 use Anng\lib\Db;
+use Anng\lib\Info;
+use Anng\lib\Table;
 use Symfony\Component\Finder\Finder;
 
 require_once "vendor/autoload.php";
@@ -25,7 +27,9 @@ $container->bind([
     'Db'        => Db::class,
     'Crontab'   => Crontab::class,
     'Finder'    => Finder::class,
-    'Connect'   => Connect::class
+    'Connect'   => Connect::class,
+    'Table'     => Table::class,
+    'Info'     => Info::class
 ]);
 
 require_once 'Helper.php';
