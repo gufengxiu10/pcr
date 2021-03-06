@@ -10,28 +10,28 @@ use function Co\run;
 
 require_once "vendor/autoload.php";
 
-//创建Server对象，监听 127.0.0.1:9501 端口
-$server = new Swoole\Server('127.0.0.1', 9502);
-$server->set([
-    'worker_num' => 5
-]);
-//监听连接进入事件
-$server->on('Connect', function ($server, $fd) {
-    echo "Client: Connect.\n";
-});
+// //创建Server对象，监听 127.0.0.1:9501 端口
+// $server = new Swoole\Server('127.0.0.1', 9502);
+// $server->set([
+//     'worker_num' => 5
+// ]);
+// //监听连接进入事件
+// $server->on('Connect', function ($server, $fd) {
+//     echo "Client: Connect.\n";
+// });
 
-//监听数据接收事件
-$server->on('Receive', function ($server, $fd, $reactor_id, $data) {
-    $server->send($fd, "Server: {$data}");
-});
+// //监听数据接收事件
+// $server->on('Receive', function ($server, $fd, $reactor_id, $data) {
+//     $server->send($fd, "Server: {$data}");
+// });
 
-//监听连接关闭事件
-$server->on('Close', function ($server, $fd) {
-    echo "Client: Close.\n";
-});
+// //监听连接关闭事件
+// $server->on('Close', function ($server, $fd) {
+//     echo "Client: Close.\n";
+// });
 
-//启动服务器
-$server->start();
+// //启动服务器
+// $server->start();
 
 
 run(function () {
@@ -41,7 +41,7 @@ run(function () {
             $websocket->push('110');
             while (true) {
                 // echo $websocket->recv(1) . "\n";
-                // $websocket->push("hello");
+                $websocket->push("来自TEST文件的消息");
                 co::sleep(1);
             }
         });

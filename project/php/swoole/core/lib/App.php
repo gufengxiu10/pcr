@@ -12,9 +12,12 @@ use Anng\lib\facade\Table as FacadeTable;
 
 use function Co\run;
 use Co\Http\Server;
+use Swoole\Constant;
 use Swoole\Process\Manager;
 use Swoole\Process\Pool;
+use Swoole\Server as SwooleServer;
 use Swoole\Table;
+use Swoole\Timer;
 
 class App
 {
@@ -62,61 +65,97 @@ class App
 
     public function start()
     {
+        $this->startFuncMap = [
+            [function (Pool $pool, $workerId) {
+                Timer::tick(1000, function () use ($pool, $workerId) {
+                    $process = $pool->getProcess(1);
+                    $socket = $process->exportSocket();
+                    $socket->send('来自定时任务的消息');
+                    // $socket->send("hello proc0\n");
+                });
+            }, false],
+            [function ($pool, $workerId) {
+                go(function () use ($pool, $workerId) {
+                    $process = $pool->getProcess();
+                    $socket = $process->exportSocket();
+                    while (true) {
+                        $frame =  $socket->recv();
+                        dump($frame);
+                    }
+                });
+                $process = $pool->getProcess();
+                $this->server($pool, $workerId);
+            }, false],
+            [function ($pool, $workerId) {
+                $process = $pool->getProcess();
+                $this->server($pool, $workerId);
+            }, false]
+        ];
+        $this->pool = new Pool(3, SWOOLE_IPC_UNIXSOCK, 0, true);
+        $this->init();
+        $this->pool->on(Constant::EVENT_WORKER_START, function (Pool $pool, int $workerId) {
+            [$func, $enbleCoroutine] = $this->startFuncMap[$workerId];
+            $this->pools[] = $pool;
+            $func($pool, $workerId);
+        });
+        $this->pool->start();
+    }
+
+    public function start2()
+    {
         $pm = new Manager();
         $this->init();
-        $pm->add(function () {
-            run(function () {
-                $this->crontabStart();
-            });
-        });
+        $pm->add(function (Pool $pool, int $workerId) use ($pm) {
+            // $this->crontabStart();
+        }, true);
 
-        $pm->addBatch(3, function (Pool $pool, int $workerId) {
-            $this->server($pool, $workerId);
-        });
-
+        // $pm->addBatch(3, function (Pool $pool, int $workerId) {
+        //     dump($workerId);
+        //     $this->server($pool, $workerId);
+        // }, true);
+        $pm->setIPCType(SWOOLE_IPC_UNIXSOCK);
         $pm->start();
     }
 
     public function server($pool, $workerId)
     {
+        // \Swoole\Coroutine::set([
+        //     'hook_flags' => SWOOLE_HOOK_CURL
+        // ]);
 
-
-        \Swoole\Coroutine::set([
-            'hook_flags' => SWOOLE_HOOK_CURL
-        ]);
-
-        run(function () use ($pool, $workerId) {
-            $this->server = new Server('0.0.0.0', 9502, false, true);
-
-            $this->createMysqlPool();
-            $this->server->handle('/', function ($request, $ws) use ($pool, $workerId) {
-                $ws->upgrade();
-                while (true) {
-                    $frame = $ws->recv();
-                    if ($frame === '') {
+        // run(function () use ($pool, $workerId) {
+        $this->server = new Server('0.0.0.0', 9502, false, true);
+        $this->createMysqlPool();
+        $this->server->handle('/', function ($request, $ws) use ($pool, $workerId) {
+            $ws->upgrade();
+            while (true) {
+                $frame = $ws->recv();
+                if ($frame === '') {
+                    $ws->close();
+                    break;
+                } else if ($frame === false) {
+                    echo "error : " . swoole_last_error() . "\n";
+                    break;
+                } else {
+                    if ($frame->data == 'close' || get_class($frame) === Swoole\WebSocket\CloseFrame::class) {
                         $ws->close();
-                        break;
-                    } else if ($frame === false) {
-                        echo "error : " . swoole_last_error() . "\n";
-                        break;
-                    } else {
-                        if ($frame->data == 'close' || get_class($frame) === Swoole\WebSocket\CloseFrame::class) {
-                            $ws->close();
-                            return;
-                        }
-                        $this->ico('WebSocket', [
-                            'ws' => $ws,
-                            'request' => $request,
-                            'frame' => $frame,
-                            'server' => $this->server,
-                            'pool' => $pool,
-                            'id' => $workerId,
-                        ]);
+                        return;
                     }
+
+                    dump($workerId . '_' . $frame->data);
+                    // $this->ico('WebSocket', [
+                    //     'ws' => $ws,
+                    //     'request' => $request,
+                    //     'frame' => $frame,
+                    //     'server' => $this->server,
+                    //     'pool' => $pool,
+                    //     'id' => $workerId,
+                    // ]);
                 }
-            });
-            $this->server->start();
+            }
         });
+        $this->server->start();
+        // });
     }
 
     /**
