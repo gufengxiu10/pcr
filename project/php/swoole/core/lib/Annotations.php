@@ -5,6 +5,6 @@ namespace Anng\lib;
 use Attribute as GlobalAttribute;
 
 #[GlobalAttribute]
-abstract class Attribute
+abstract class Annotations
 {
 }

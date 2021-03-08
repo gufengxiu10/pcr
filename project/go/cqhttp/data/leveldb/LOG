@@ -602,3 +602,19 @@
 00:40:35.911687 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
 00:40:36.011408 CURRENT: missing target file: MANIFEST-000138
 00:40:36.019294 CURRENT.bak: missing target file: MANIFEST-000135
+=============== Mar 8, 2021 (UTC) ===============
+00:59:17.607697 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+00:59:17.674804 CURRENT: missing target file: MANIFEST-000138
+00:59:17.717632 CURRENT.bak: missing target file: MANIFEST-000135
+=============== Mar 8, 2021 (UTC) ===============
+01:36:34.135145 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+01:36:34.231037 CURRENT: missing target file: MANIFEST-000138
+01:36:34.311130 CURRENT.bak: missing target file: MANIFEST-000135
+=============== Mar 8, 2021 (UTC) ===============
+02:21:44.557202 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+02:21:44.576511 CURRENT: missing target file: MANIFEST-000138
+02:21:44.591967 CURRENT.bak: missing target file: MANIFEST-000135
+=============== Mar 8, 2021 (UTC) ===============
+04:05:44.997666 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+04:05:45.007780 CURRENT: missing target file: MANIFEST-000138
+04:05:45.015777 CURRENT.bak: missing target file: MANIFEST-000135

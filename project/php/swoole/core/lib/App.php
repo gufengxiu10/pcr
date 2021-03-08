@@ -2,22 +2,19 @@
 
 namespace Anng\lib;
 
+use Anng\lib\contract\AnnotationsContract;
 use Anng\lib\facade\Config;
+use Anng\lib\facade\Container;
 use Anng\lib\facade\Crontab;
 use Anng\lib\facade\Db;
 use Anng\lib\facade\Env;
-use Anng\lib\facade\Info;
-use Anng\lib\facade\Reflection;
 use Anng\lib\facade\Table as FacadeTable;
 
-use function Co\run;
 use Co\Http\Server;
-use Swoole\Constant;
-use Swoole\Process\Manager;
+use ReflectionClass;
 use Swoole\Process\Pool;
-use Swoole\Server as SwooleServer;
 use Swoole\Table;
-use Swoole\Timer;
+use Symfony\Component\Finder\Finder;
 
 class App
 {
@@ -52,7 +49,6 @@ class App
             Config::load($file, pathinfo($file, PATHINFO_FILENAME));
         }
 
-
         //加载ENV文件
         Env::setPath($this->getEnv())->loading();
 
@@ -65,67 +61,40 @@ class App
 
     public function start()
     {
-        $this->startFuncMap = [
-            [function (Pool $pool, $workerId) {
-                Timer::tick(1000, function () use ($pool, $workerId) {
-                    $process = $pool->getProcess(1);
-                    $socket = $process->exportSocket();
-                    $socket->send('来自定时任务的消息');
-                    // $socket->send("hello proc0\n");
-                });
-            }, false],
-            [function ($pool, $workerId) {
-                go(function () use ($pool, $workerId) {
-                    $process = $pool->getProcess();
-                    $socket = $process->exportSocket();
-                    while (true) {
-                        $frame =  $socket->recv();
-                        dump($frame);
-                    }
-                });
-                $process = $pool->getProcess();
-                $this->server($pool, $workerId);
-            }, false],
-            [function ($pool, $workerId) {
-                $process = $pool->getProcess();
-                $this->server($pool, $workerId);
-            }, false]
-        ];
-        $this->pool = new Pool(3, SWOOLE_IPC_UNIXSOCK, 0, true);
-        $this->init();
-        $this->pool->on(Constant::EVENT_WORKER_START, function (Pool $pool, int $workerId) {
-            [$func, $enbleCoroutine] = $this->startFuncMap[$workerId];
-            $this->pools[] = $pool;
-            $func($pool, $workerId);
-        });
-        $this->pool->start();
-    }
-
-    public function start2()
-    {
+        //为进程定义名字
+        // swoole_set_process_name('anng');
         $pm = new Manager();
         $this->init();
-        $pm->add(function (Pool $pool, int $workerId) use ($pm) {
-            // $this->crontabStart();
-        }, true);
+        //独立进程启动定时任务
+        // $pm->add(function (Pool $pool, int $workerId) {
+        //     $this->crontabStart($pool, $workerId);
+        // });
 
-        // $pm->addBatch(3, function (Pool $pool, int $workerId) {
-        //     dump($workerId);
-        //     $this->server($pool, $workerId);
-        // }, true);
+        $pm->addBatch(1, function (Pool $pool, int $workerId) {
+            $this->server($pool, $workerId);
+        });
         $pm->setIPCType(SWOOLE_IPC_UNIXSOCK);
         $pm->start();
     }
 
-    public function server($pool, $workerId)
+    private function server($pool, $workerId)
     {
-        // \Swoole\Coroutine::set([
-        //     'hook_flags' => SWOOLE_HOOK_CURL
-        // ]);
+        \Swoole\Coroutine::set([
+            'hook_flags' => SWOOLE_HOOK_CURL
+        ]);
 
-        // run(function () use ($pool, $workerId) {
-        $this->server = new Server('0.0.0.0', 9502, false, true);
+        //启动任务调度
+        if ($workerId == 0) {
+            $this->crontabStart($pool, $workerId);
+        }
+
+        //创建连接池
         $this->createMysqlPool();
+
+        //加载controller的全部注解
+        $this->loadAnnotation();
+
+        $this->server = new Server('0.0.0.0', 9502, false, true);
         $this->server->handle('/', function ($request, $ws) use ($pool, $workerId) {
             $ws->upgrade();
             while (true) {
@@ -155,7 +124,6 @@ class App
             }
         });
         $this->server->start();
-        // });
     }
 
     /**
@@ -231,5 +199,25 @@ class App
     public function getFd()
     {
         return $this->fd;
+    }
+
+    public function loadAnnotation()
+    {
+        $finder = Container::make(Finder::class);
+        $finder->in($this->rootPath . 'app/controller');
+
+        foreach ($finder->files() as $file) {
+            $class = '\\app\\controller\\' . str_replace([
+                '.php', '/',
+            ], ['', '\\'], $file->getRelativePathname());
+            $reflection = new ReflectionClass($class);
+            $class = $reflection->getAttributes(Annotations::class);
+            if (!empty($class)) {
+            }
+
+            foreach ($reflection->getMethods() as $method) {
+                dump($method->getAttributes());
+            }
+        }
     }
 }
