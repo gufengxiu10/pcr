@@ -2,11 +2,12 @@
 
 namespace app\controller;
 
-use Anng\lib\annotations\Cq;
+use Anng\lib\Annotations\module\Cq;
+use Anng\lib\annotations\Param;
 
 class Test
 {
-    #[Cq(['key' => '你好'])]
+    #[Cq()]
     public function FunctionName()
     {
     }

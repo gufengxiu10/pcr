@@ -3,6 +3,7 @@
 namespace Anng\lib;
 
 use Anng\lib\contract\AnnotationsContract;
+use Anng\lib\facade\Annotations;
 use Anng\lib\facade\Config;
 use Anng\lib\facade\Container;
 use Anng\lib\facade\Crontab;
@@ -11,6 +12,7 @@ use Anng\lib\facade\Env;
 use Anng\lib\facade\Table as FacadeTable;
 
 use Co\Http\Server;
+use ReflectionAttribute;
 use ReflectionClass;
 use Swoole\Process\Pool;
 use Swoole\Table;
@@ -211,12 +213,12 @@ class App
                 '.php', '/',
             ], ['', '\\'], $file->getRelativePathname());
             $reflection = new ReflectionClass($class);
-            $class = $reflection->getAttributes(Annotations::class);
+            $class = $reflection->getAttributes();
             if (!empty($class)) {
             }
 
             foreach ($reflection->getMethods() as $method) {
-                dump($method->getAttributes());
+                dump(get_class_methods($method->getAttributes(null, ReflectionAttribute::IS_INSTANCEOF)[0]));
             }
         }
     }

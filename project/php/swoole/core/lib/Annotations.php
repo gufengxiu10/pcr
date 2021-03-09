@@ -1,10 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Anng\lib;
 
-use Attribute as GlobalAttribute;
+use Attribute;
+use ReflectionAttribute;
+use ReflectionClass;
 
-#[GlobalAttribute]
-abstract class Annotations
+class Annotations
 {
+
+    private $instances = [];
+
+    public function set(array $attribut)
+    {
+        dump($attribut);
+    }
 }
