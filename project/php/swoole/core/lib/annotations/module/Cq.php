@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace Anng\lib\annotations\module;
 
-use Anng\lib\Annotations;
-use Anng\lib\contract\AnnotationsContract;
+use Anng\lib\annotations\AnnotationsContract;
+use Anng\lib\facade\Annotations as FacadeAnnotations;
 use Attribute;
 
-class Cq extends Annotations implements AnnotationsContract
+#[Attribute]
+class Cq implements AnnotationsContract
 {
-    public function __construct()
+    public function __construct($key, $alias = [])
     {
-        dump(func_get_args());
+        FacadeAnnotations::module(static::class);
     }
 
     public function param()
     {
-        # code...
     }
 }

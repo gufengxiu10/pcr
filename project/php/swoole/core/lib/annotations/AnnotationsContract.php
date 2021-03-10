@@ -2,9 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Anng\lib\contract;
-
-use Attribute;
+namespace Anng\lib\annotations;
 
 interface AnnotationsContract
 {

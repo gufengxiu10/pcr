@@ -622,3 +622,7 @@
 00:49:42.238807 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
 00:49:42.258978 CURRENT: missing target file: MANIFEST-000138
 00:49:42.264386 CURRENT.bak: missing target file: MANIFEST-000135
+=============== Mar 10, 2021 (UTC) ===============
+01:06:10.584698 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+01:06:10.826640 CURRENT: missing target file: MANIFEST-000138
+01:06:10.937840 CURRENT.bak: missing target file: MANIFEST-000135

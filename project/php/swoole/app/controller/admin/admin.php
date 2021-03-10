@@ -3,11 +3,12 @@
 namespace app\controller\admin;
 
 use Anng\lib\annotations\Cq;
+use Anng\lib\annotations\module\Messages;
 use app\controller\Test;
 
 class Admin
 {
-    #[Cq(['param' => 100])]
+    #[Messages(['param' => '你好'])]
     public function list()
     {
     }

@@ -2,8 +2,10 @@
 
 namespace Anng\lib;
 
-use Anng\lib\contract\AnnotationsContract;
-use Anng\lib\facade\Annotations;
+use Anng\lib\annotations\Annotaions;
+use Anng\lib\annotations\AnnotationsContract;
+use Anng\lib\annotations\module\Cq;
+use Anng\lib\annotations\module\Messages;
 use Anng\lib\facade\Config;
 use Anng\lib\facade\Container;
 use Anng\lib\facade\Crontab;
@@ -205,21 +207,22 @@ class App
 
     public function loadAnnotation()
     {
-        $finder = Container::make(Finder::class);
-        $finder->in($this->rootPath . 'app/controller');
+        new Annotaions;
+        // $finder = Container::make(Finder::class);
+        // $finder->in($this->rootPath . 'app/controller');
 
-        foreach ($finder->files() as $file) {
-            $class = '\\app\\controller\\' . str_replace([
-                '.php', '/',
-            ], ['', '\\'], $file->getRelativePathname());
-            $reflection = new ReflectionClass($class);
-            $class = $reflection->getAttributes();
-            if (!empty($class)) {
-            }
+        // foreach ($finder->files() as $file) {
+        //     $class = '\\app\\controller\\' . str_replace([
+        //         '.php', '/',
+        //     ], ['', '\\'], $file->getRelativePathname());
+        //     $reflection = new ReflectionClass($class);
+        //     $class = $reflection->getAttributes();
+        //     if (!empty($class)) {
+        //     }
 
-            foreach ($reflection->getMethods() as $method) {
-                dump(get_class_methods($method->getAttributes(null, ReflectionAttribute::IS_INSTANCEOF)[0]));
-            }
-        }
+        //     foreach ($reflection->getMethods() as $method) {
+        //         dump($method->getAttributes(Messages::class));
+        //     }
+        // }
     }
 }
