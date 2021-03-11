@@ -8,12 +8,12 @@ use Anng\lib\annotations\AnnotationsContract;
 use Anng\lib\facade\Annotations as FacadeAnnotations;
 use Attribute;
 
-#[Attribute]
-class Cq implements AnnotationsContract
+#[Attribute(Attribute::TARGET_ALL | Attribute::IS_REPEATABLE)]
+class Cq
 {
-    public function __construct($key, $alias = [])
+    public function __construct()
     {
-        FacadeAnnotations::module(static::class);
+        # code...
     }
 
     public function param()

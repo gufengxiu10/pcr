@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace app\crontab;
 
-use Anng\lib\facade\Connect;
 use Anng\lib\facade\Redis;
 use Anng\lib\facade\Table;
 use Swlib\SaberGM;
@@ -13,12 +12,6 @@ class ToDayPrice
 {
     public function run()
     {
-        // $table = Table::getinstance();
-        // foreach ($table as $key => $row) {
-        //     dump($key);
-        // }
-        dump(1);
-        return;
         $group = [415446505];
         // $group = [415446505, 93958924];
         if (!Redis::exists('lolicon')) {
@@ -37,60 +30,39 @@ class ToDayPrice
 
         $data = Redis::get('lolicon');
         $data = json_decode($data, true);
-        $fds = Connect::get();
         $url = array_shift($data);
-        foreach ($fds as $key => $value) {
-            try {
-                $res = SaberGM::get($url['url'], [
-                    'headers' => [
-                        'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:30.0) Gecko/20100101 Firefox/30.0',
-                        ':authority' => 'pixiv-image-jp.pwp.link',
-                        ':method' => 'GET',
-                        ':path' => $url['url'],
-                        ':scheme' => 'https',
-                    ],
-                    'timeout' => 20,
-                    'retry_time' => 3
-                ]);
+        try {
+            $res = SaberGM::get($url['url'], [
+                'headers' => [
+                    'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:30.0) Gecko/20100101 Firefox/30.0',
+                    ':authority' => 'pixiv-image-jp.pwp.link',
+                    ':method' => 'GET',
+                    ':path' => $url['url'],
+                    ':scheme' => 'https',
+                ],
+                'timeout' => 20,
+                'retry_time' => 3
+            ]);
 
-                if ($res->getStatusCode() != 200) {
-                    dump($res->getStatusCode());
-                    continue;
-                }
-
-                if (!file_exists('/images/t')) {
-                    mkdir('/images/t', 0777, true);
-                }
-                $fileName = '/images/t/' . substr($url['url'], strrpos($url['url'], '/') + 1);
-                $wd = fopen($fileName, 'w');
-
-                $body = $res->getBody();
-                while (!$body->eof()) {
-                    $content = $body->read(1024 * 200);
-                    fwrite($wd, $content);
-                }
-
-                fclose($wd);
-                foreach ($group as $val) {
-                    $postData = [
-                        "action" => "send_group_msg",
-                        "params" => [
-                            "group_id" => $val,
-                            "message" => [
-                                "type" => "image",
-                                "data" => [
-                                    "file" => 'file://' . $fileName,
-                                ]
-                            ]
-                        ],
-                    ];
-                    dump($postData);
-                    $value['ws']->push(json_encode($postData, JSON_UNESCAPED_UNICODE));
-                }
-            } catch (\Throwable $th) {
-                dump($th->getMessage());
-                array_push($data, $url);
+            if ($res->getStatusCode() != 200) {
+                return;
             }
+
+            if (!file_exists('/images/t')) {
+                mkdir('/images/t', 0777, true);
+            }
+            $fileName = '/images/t/' . substr($url['url'], strrpos($url['url'], '/') + 1);
+            $wd = fopen($fileName, 'w');
+
+            $body = $res->getBody();
+            while (!$body->eof()) {
+                $content = $body->read(1024 * 200);
+                fwrite($wd, $content);
+            }
+            fclose($wd);
+        } catch (\Throwable $th) {
+            dump($th->getMessage());
+            array_push($data, $url);
         }
 
         if (empty($data)) {

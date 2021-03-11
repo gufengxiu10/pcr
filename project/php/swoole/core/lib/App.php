@@ -2,15 +2,12 @@
 
 namespace Anng\lib;
 
-use Anng\lib\annotations\Annotaions;
-use Anng\lib\annotations\AnnotationsContract;
-use Anng\lib\annotations\module\Cq;
-use Anng\lib\annotations\module\Messages;
+use Anng\lib\facade\Annotations;
 use Anng\lib\facade\Config;
-use Anng\lib\facade\Container;
 use Anng\lib\facade\Crontab;
 use Anng\lib\facade\Db;
 use Anng\lib\facade\Env;
+use Anng\lib\facade\Messages;
 use Anng\lib\facade\Table as FacadeTable;
 
 use Co\Http\Server;
@@ -69,11 +66,6 @@ class App
         // swoole_set_process_name('anng');
         $pm = new Manager();
         $this->init();
-        //独立进程启动定时任务
-        // $pm->add(function (Pool $pool, int $workerId) {
-        //     $this->crontabStart($pool, $workerId);
-        // });
-
         $pm->addBatch(1, function (Pool $pool, int $workerId) {
             $this->server($pool, $workerId);
         });
@@ -115,7 +107,9 @@ class App
                         return;
                     }
 
-                    dump($workerId . '_' . $frame->data);
+                    dump($frame->fd);
+                    $ws->push($frame->fd);
+                    // dump($workerId . '_' . $frame->fd . '_' . $frame->data);
                     // $this->ico('WebSocket', [
                     //     'ws' => $ws,
                     //     'request' => $request,
@@ -195,8 +189,12 @@ class App
         return $this->rootPath;
     }
 
-    public function getRootPath()
+    public function getRootPath(string $value = ''): string
     {
+        if (!empty($value)) {
+            return $this->rootPath . $value;
+        }
+
         return $this->rootPath;
     }
 
@@ -207,22 +205,6 @@ class App
 
     public function loadAnnotation()
     {
-        new Annotaions;
-        // $finder = Container::make(Finder::class);
-        // $finder->in($this->rootPath . 'app/controller');
-
-        // foreach ($finder->files() as $file) {
-        //     $class = '\\app\\controller\\' . str_replace([
-        //         '.php', '/',
-        //     ], ['', '\\'], $file->getRelativePathname());
-        //     $reflection = new ReflectionClass($class);
-        //     $class = $reflection->getAttributes();
-        //     if (!empty($class)) {
-        //     }
-
-        //     foreach ($reflection->getMethods() as $method) {
-        //         dump($method->getAttributes(Messages::class));
-        //     }
-        // }
+        Annotations::load()->run();
     }
 }

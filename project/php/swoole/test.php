@@ -40,8 +40,9 @@ run(function () {
             $websocket = SaberGM::websocket('ws://127.0.0.1:9502');
             $websocket->push('110');
             while (true) {
-                // echo $websocket->recv(1) . "\n";
                 $websocket->push("来自TEST文件的消息");
+                $d =  $websocket->recv(1);
+                dump($i . '_' . $d);
                 co::sleep(1);
             }
         });

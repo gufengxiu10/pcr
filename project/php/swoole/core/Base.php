@@ -12,6 +12,7 @@ use Anng\lib\Db;
 use Anng\lib\Info;
 use Anng\lib\Table;
 use Anng\lib\Annotations;
+use Anng\lib\Messages;
 use Symfony\Component\Finder\Finder;
 
 require_once "vendor/autoload.php";
@@ -31,7 +32,8 @@ $container->bind([
     'Connect'       => Connect::class,
     'Table'         => Table::class,
     'Info'          => Info::class,
-    'Annotations'   => Annotations::class
+    'Annotations'   => Annotations::class,
+    'Messages'      => Messages::class
 ]);
 
 require_once 'Helper.php';
