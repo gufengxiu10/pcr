@@ -1,0 +1,10 @@
+*.log
+*.jpg
+*.png
+*.log
+*.txt
+/project/php/*
+/project/go/*
+*.log
+.vscode
+*.image

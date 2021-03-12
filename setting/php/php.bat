@@ -1,0 +1,1 @@
+docker exec web_php74 php %1
