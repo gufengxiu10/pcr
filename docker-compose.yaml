@@ -3,7 +3,8 @@ version: "3"
 services:
   go:
     container_name: pcr_go
-    build: ./setting/goCqhttp
+    build: ./setting/go
+    working_dir: /go
     ports:
       - "8088:8088"
     privileged: true
@@ -16,7 +17,7 @@ services:
     volumes:
       - ./project/go:/go
       - ./setting/minio/data:/images
-      - ./setting/goCqhttp/app.sh:/app.sh
+      - ./setting/go/app.sh:/app.sh
   minio:
     image: minio/minio:latest
     container_name: pcr_minio
