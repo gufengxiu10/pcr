@@ -8,3 +8,4 @@
 *.log
 .vscode
 *.image
+project/node/vue-admin-beautiful
