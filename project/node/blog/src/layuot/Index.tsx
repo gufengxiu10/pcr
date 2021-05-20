@@ -1,6 +1,11 @@
 import React from "react";
 import { Layout, Menu, Breadcrumb } from "antd";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+} from "react-router-dom";
 import {
   DesktopOutlined,
   PieChartOutlined,
@@ -84,8 +89,7 @@ export default class LayoutBase extends React.Component {
                   <Route path="/article">
                     <Article />
                   </Route>
-                  <Route path="/id">
-                    <Edit />
+                  <Route path="/id/:id" component={Edit}>
                   </Route>
                 </Switch>
               </div>

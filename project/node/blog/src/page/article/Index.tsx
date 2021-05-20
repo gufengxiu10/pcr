@@ -1,18 +1,47 @@
 import React from "react";
 import { Data, State } from "./index.type";
 import { Table, Modal, Button } from "antd";
+import axioas from "axios";
 
 import { Link } from "react-router-dom";
 
 export default class Article extends React.Component {
   public state: State = {
     visible: false,
+    data: [],
   };
+
+  columns: Array<{}> = [
+    {
+      title: "编号",
+      dataIndex: "id",
+    },
+    {
+      title: "标题",
+      className: "column-money",
+      dataIndex: "title",
+    },
+    {
+      titel: "操作",
+      render: (text: Data, row: Data, index: number) => {
+        const url = "id/" + row.id;
+        return (
+          <Link to={url}>
+            <Button type="text">编辑</Button>
+          </Link>
+        );
+      },
+    },
+  ];
 
   constructor(props: {}) {
     super(props);
     this.modalShow = this.modalShow.bind(this);
     this.modalHide = this.modalHide.bind(this);
+  }
+
+  componentDidMount() {
+    this.list();
   }
 
   modalShow() {
@@ -23,58 +52,18 @@ export default class Article extends React.Component {
     this.setState({ visible: false });
   }
 
-  columns: Array<{}> = [
-    {
-      title: "编号",
-      dataIndex: "name",
-      render: (text: string) => <a>{text}</a>,
-    },
-    {
-      title: "标题",
-      className: "column-money",
-      dataIndex: "money",
-      align: "right",
-    },
-    {
-      title: "Address",
-      dataIndex: "address",
-      render: (text: string) => {
-        return (
-          <Button.Group>
-            <Link to="id">
-              <Button>编辑</Button>
-            </Link>
-          </Button.Group>
-        );
-      },
-    },
-  ];
-
-  data: Array<Data> = [
-    {
-      key: "1",
-      name: "John Brown",
-      money: "￥300,000.00",
-      address: "New York No. 1 Lake Park",
-    },
-    {
-      key: "2",
-      name: "Jim Green",
-      money: "￥1,256,000.00",
-      address: "London No. 1 Lake Park",
-    },
-    {
-      key: "3",
-      name: "Joe Black",
-      money: "￥120,000.00",
-      address: "Sidney No. 1 Lake Park",
-    },
-  ];
+  async list() {
+    const data = await axioas.get("/article");
+    data.data.forEach((item: Data) => {
+      item.key = item.id;
+    });
+    this.setState({ data: data.data });
+  }
 
   render() {
     return (
       <>
-        <Table columns={this.columns} dataSource={this.data} bordered />
+        <Table columns={this.columns} dataSource={this.state.data} bordered />
       </>
     );
   }
